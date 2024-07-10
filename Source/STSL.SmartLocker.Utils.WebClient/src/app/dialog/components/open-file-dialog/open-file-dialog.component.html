@@ -1,0 +1,28 @@
+<div class="flex flex-col">
+  <p>
+    Drop files in the box below or use the upload button
+  </p>
+  <div
+    class="flex-grow flex items-center justify-center min-h-[12rem] border-2 border-dashed border-gray-600 my-2"
+    [ngClass]="{ '!border-solid !border-primary-700': isDraggingOverDropArea }"
+    (drop)="filesDropped($event)"
+    (dragover)="filesDraggedOver($event)"
+    (dragenter)="fileDragEnter($event)"
+    (dragleave)="fileDragLeave($event)"
+  >
+    <div class="text-gray-600 pointer-events-none">
+      <ng-container *ngIf="filesAreAcceptable; else awaitingFiles">
+        <div *ngFor="let fileDescription of fileDescriptions">
+          {{ fileDescription }}
+        </div>
+      </ng-container>
+      <ng-template #awaitingFiles>
+        <span>{{ isDraggingOverDropArea ? 'Use Files' : 'Drop Files Here..' }}</span>
+      </ng-template>
+    </div>
+  </div>
+  <input type="file" [accept]="settings.accept.join(', ')" [multiple]="settings.maxFileCount > 1" (input)="filesUploaded($event)">
+  <button mat-flat-button color="primary" (click)="confirmFiles()" [disabled]="!filesAreAcceptable">
+    Confirm Files
+  </button>
+</div>

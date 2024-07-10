@@ -1,0 +1,207 @@
+<!-- Back Button -->
+<div class="back-button-container">
+    <button (click)="handleBackClick()" class="back-button">
+        <div class="back-button-content">
+        <fa-icon [icon]="faBackArrow" class="mr-2"></fa-icon>
+        <p class="text-sm">Back</p>
+        </div>
+    </button>
+</div>
+
+<!-- Header -->
+<div class="locker-overview-header">
+    <h2 class="text-black">{{locationName}}</h2>
+    <h3 class="ml-4 text-gray-700">{{ lockerBankSummary.name }}</h3>
+</div>
+
+<!-- Wrapper for screen size & margins.. -->
+<div [ngClass]="{'max-w-screen-md mx-auto': !fullWidth, 'flex flex-col justify-center items-center h-full': verticallyCentered || fullHeight}" class=" max-w-screen-md mx-auto locker-status-wrapper">
+        <div class="text-center mb-4">
+            <h2 class="text-black">Locker {{ lockerStatus.label }}</h2>
+            <h3 class="text-gray-700">{{lockerStatus.serviceTag}}</h3>
+        </div>
+
+    <!-- Base Locker Summary Component -->
+    <ng-container *ngIf="!showAssignCardHoldersComponent">
+        <div>
+            <mat-divider class="content-divider"></mat-divider>
+            <ng-container *ngTemplateOutlet="assignedToChipSet; context: {$implicit: lockerStatus}"></ng-container>
+            <ng-container *ngTemplateOutlet="lockerInfo; context: {$implicit: lockerStatus}"></ng-container>
+            <!--<mat-divider class="content-divider"></mat-divider>
+            <ng-container *ngTemplateOutlet="lockerAudits; context: {$implicit: lockerStatus}"></ng-container>-->
+        </div>
+    </ng-container>
+
+    <!-- Assign Users component if add card holders button is clicked -->
+    <ng-container *ngIf="showAssignCardHoldersComponent">
+        <!-- Ensure selectedLockerBankSummary is not null, it should never be, so make sure to clean up correctly -->
+        <mat-divider class="content-divider"></mat-divider>
+        <h2 class="text-center text-black  pt-2"> Add {{cardHolderAliasPlural}} to Locker</h2>
+
+        <assign-card-holders
+            [locationName]="locationName"
+            [lockerBankName]="lockerBankSummary.name"
+            [lockerLabel]="lockerStatus.label"
+            [lockerStatus]="lockerStatus"
+            (backClicked)="toggleAssignCardHolders()"
+            (cardHolderSelected)="addCardHolder($event)">
+        </assign-card-holders>
+    </ng-container>
+</div>
+
+<!-- Template for the Assignment Chips -->
+<ng-template #assignedToChipSet let-lockerStatus>
+    <div class="assigned-chip-set-container">
+        <div class="text-center">
+            <h2 class="mb-2 pt-2 text-black">Allocated {{cardHolderAliasPlural}}</h2>
+        </div>
+        <!-- Change logic here to only display chips if there are assigned users -->
+        <mat-chip-row *ngFor="let owner of lockerOwners$ | async" [value]="owner.cardHolder.id" class="assigned-chip" [editable]="false" tabindex="-1">
+            {{ owner.cardHolder.firstName }} {{ owner.cardHolder.lastName }}
+            <button matChipRemove (click)="removeCardHolder(owner.cardHolder.id)" tabindex="0">
+                <fa-icon [icon]="faCircleMinus" [styles]="{'color': '#DB4352'}"></fa-icon>
+            </button>
+        </mat-chip-row>
+        <button class="add-button" (click)="toggleAssignCardHolders()">
+            <fa-icon [icon]="faPlus" [styles]="{'margin-right': '0.25rem'}"></fa-icon>
+            <span class="add-button-text">Add {{cardHolderAliasPlural}}</span>
+        </button>  
+        <!-- Multiple people allocated warning -->
+        <div *ngIf="showMultipleStaffAssignedWarning()" class="warnings-container">
+            <fa-icon [icon]="faExclamationTriangle" size="lg" [styles]="{'color': '#EDA247'}"></fa-icon>
+            <small class="ml-1">Multiple {{cardHolderAliasPlural}} allocated to permanent locker</small>     
+        </div>
+        <!-- Save -->
+        <div class="saving-container">
+            <div *ngIf="showSaveButton;">
+                <button (click)="saveChanges()" class="save-button">Save Changes</button>            
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!-- Template for the lock information -->
+<ng-template #lockerInfo let-lockerStatus>
+    <div class="info-section">
+
+        <h2 class="info-title">Locker Information</h2>
+        <mat-divider class="content-divider"></mat-divider>
+        <div class="info-row">
+            <span class="label-bold">
+                Locker Type
+                <button type="button" 
+                    matTooltip="
+                        Permanent lockers should only be assigned to a single person"
+                    #tooltip="matTooltip" 
+                    matTooltipClass="my-tooltip" 
+                    (click)="tooltip.toggle()">
+                    <fa-icon [icon]="faHelp" size="lg" class="ml-1"></fa-icon>
+                </button>
+            </span>
+            <span>{{getLockerTypeName(lockerBankSummary.behaviour)}}</span>
+        </div>
+        <mat-divider class="inner-content-divider"></mat-divider>
+        <div class="info-row">
+            <span class="label-bold">Lock Type</span>
+            <span>{{getLockTypeName(lockerStatus.securityType)}}</span>
+        </div>
+        
+        <ng-container *ngIf="lockerStatus.securityType === LockerSecurityType.SmartLock">
+            <mat-divider class="inner-content-divider"></mat-divider>
+            <div class="info-row">
+                <span class="label-bold">Lock Battery</span>
+                <ng-container *ngTemplateOutlet="battery; context: {$implicit: lockerStatus}"></ng-container>
+            </div>
+            <mat-divider class="inner-content-divider"></mat-divider>
+            <div class="info-row">
+                <span class="label-bold">Lock Status</span>
+                <ng-container *ngTemplateOutlet="lockStatusChip; context: {$implicit: lockerStatus}"></ng-container>
+            </div>
+            <mat-divider class="inner-content-divider"></mat-divider>
+            <div class="info-row">
+                <span class="label-bold">Last Event</span>
+                <span>{{ lockerStatus.lastAuditDescription ?? 'N/A' }}</span>
+            </div>
+            <mat-divider class="inner-content-divider"></mat-divider>
+            <div class="info-row">
+                <span class="label-bold">Alerts</span>
+                <ng-container *ngTemplateOutlet="warnings; context: {$implicit: lockerStatus}"></ng-container>
+            </div>
+        </ng-container>
+        
+    </div>
+</ng-template>
+
+<!-- Template for the lock audits -->
+<ng-template #lockerAudits let-lockerstatus>
+    <div>
+        <h2 class="text-center mt-4 mb-4 text-black">Audit Events</h2>
+        <!-- Embed the audit table component and bind lockerStatus -->
+        <!--<lock-audit-table [lockerStatus]="lockerStatus"></lock-audit-table>-->
+    </div>
+
+</ng-template>
+
+<!-- Template for battery percentage / icon / colour -->
+<ng-template #battery let-lockerStatus>
+    <span *ngIf="lockerStatus.batteryVoltage === undefined || lockerStatus.batteryVoltage === null; else batteryLevelKnown">
+        <p>N/A</p>
+      <ng-container *ngIf="lockerStatus.securityType !== LockerSecurityType.SmartLock"></ng-container>
+    </span>
+    <ng-template #batteryLevelKnown>
+      <div style="display: flex; align-items: center;">
+        
+        <p style="margin-right: 4px; color: '{{getBatteryLevelColour(lockerStatus.batteryVoltage)}}'">
+            {{getBatteryVoltagePercentage(lockerStatus.batteryVoltage)}}
+        </p>
+        <fa-icon 
+          [icon]="getBatteryIcon(lockerStatus.batteryVoltage)"
+          [styles]="{'color': getBatteryLevelColour(lockerStatus.batteryVoltage), 'font-size':'24px', 'vertical-align':'middle'}">
+        </fa-icon>
+      </div>
+    </ng-template>
+</ng-template>
+
+
+<!-- Template for recent communication -->
+<ng-template #lockStatusChip let-lockerStatus>
+    <span
+      class="lock-status-chip text-l ml-2 mr-3" 
+      *ngIf="lockerStatus.securityType === LockerSecurityType.SmartLock">
+      <span *ngIf="lockHasRecentCommunication(); else noRecentLockCommunication" class="lock-status-online">
+        <span class="status-circle online-circle"></span>
+        <span>Online</span>
+      </span>
+  
+      <ng-template #noRecentLockCommunication>
+        <span class="lock-status-offline">
+          <span class="status-circle offline-circle"></span>
+          <span>Offline</span>
+        </span>
+      </ng-template>
+    </span>
+  </ng-template>
+
+<!-- Template for Alerts / Warnings -->
+<ng-template #warnings let-lockerStatus>
+    <ng-container *ngIf="lockerStatus.batteryVoltage <= 3.4; else auditCheck">
+        <div class="text-right">
+            <fa-icon [icon]="faExclamationTriangle" size="lg" [styles]="{'color': '#DB4352'}"></fa-icon>
+            <span class="ml-1">Battery change needed</span>
+        </div>
+    </ng-container>
+    
+    <ng-template #auditCheck>
+      <ng-container *ngIf="getAuditStatus() === 0; else noWarnings">
+        <div class="text-right">
+            <fa-icon [icon]="faExclamationTriangle" size="lg" [styles]="{'color': '#EDA247'}"></fa-icon>
+            <span class="ml-1">Locker not used in last month</span>
+        </div>
+      </ng-container>
+    </ng-template>
+    <ng-template #noWarnings>
+        <div class="text-right">
+              <span>None</span>
+        </div>
+      </ng-template>
+  </ng-template>

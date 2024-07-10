@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.form-wrapper{
+  @apply flex flex-col items-center bg-offwhite w-full sm:w-[450px] 2xl:w-[1080px] rounded-md border-2 p-5 py-10 2xl:px-10 2xl:p-20
+}
+.main-heading{
+  @apply text-center font-semibold text-3xl 2xl:text-5xl text-dark mb-5 2xl:mb-10;
+}
+.heading{
+  @apply w-full text-center font-semibold text-2xl 2xl:text-4xl text-dark mb-5;
+}
+.secondary-btn{
+  @apply w-max text-xl font-medium bg-offwhite rounded-md border-2 border-dark text-gray hover:bg-white px-7 p-5
+}
+input{
+  @apply w-full h-10 2xl:h-14 px-2 bg-white border text-lg 2xl:text-2xl font-medium rounded-sm;
+}
+.successMessage{
+  @apply flex items-center w-full border border-green-600 p-2 rounded-lg bg-white text-green-500 text-sm mt-5
+}
+.errorMessage{
+  @apply flex items-center w-full border border-red-600 p-2 rounded-lg bg-white text-red-500 text-sm mt-5
+}
+.loadingText{
+  @apply text-base font-semibold w-full my-3
+}

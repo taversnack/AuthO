@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Communication.Email" Version="1.0.1" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.AzureServiceBus\STSL.SmartLocker.Utils.AzureServiceBus.csproj" />
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.BlubugConfigProducer\STSL.SmartLocker.Utils.BlubugConfigProducer.csproj" />
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.Common\STSL.SmartLocker.Utils.Common.csproj" />
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.Data.Services.Contracts\STSL.SmartLocker.Utils.Data.Services.Contracts.csproj" />
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.Data.SqlServer\STSL.SmartLocker.Utils.Data.SqlServer.csproj" />
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.Data\STSL.SmartLocker.Utils.Data.csproj" />
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.Domain\STSL.SmartLocker.Utils.Domain.csproj" />
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.DTO\STSL.SmartLocker.Utils.DTO.csproj" />
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.Kiosk.Models\STSL.SmartLocker.Utils.Kiosk.Models.csproj" />
+  </ItemGroup>
+
+</Project>

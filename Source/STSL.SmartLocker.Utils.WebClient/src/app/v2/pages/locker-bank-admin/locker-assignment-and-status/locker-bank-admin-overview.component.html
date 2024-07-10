@@ -1,0 +1,31 @@
+<!--<app-layout [fullHeight]="false" [fullWidth]="false"> -->
+<div class="locker-bank-admin-wrapper container">
+    <!-- Show locker bank overview if no locker bank is selected -->
+    <locker-bank-overview 
+      *ngIf="!selectedLockerBankSummary"
+      [lockerBankSummaries]="lockerBankSummaries$"
+      (summaryCardClicked)="handleSummaryCardClicked($event)">
+    </locker-bank-overview>
+
+    <!-- Show lockers overview if a locker bank is selected -->
+    <ng-container *ngIf="selectedLockerBankSummary && !selectedLockerSummary && selectedLockerBankLocationName">
+      <lockers-overview 
+        [lockerBank]="selectedLockerBankSummary"
+        [locationName]="selectedLockerBankLocationName"
+        (backClicked)="clearSelection()"
+        (cardClicked)="handleLockerCardClicked($event)">
+      </lockers-overview>
+    </ng-container>
+
+    <!-- Show Locker Summary if locker selected -->
+    <ng-container *ngIf="selectedLockerSummary && selectedLockerBankLocationName">
+      <!-- Ensure selectedLockerBankSummary is not null, it should never be, so make sure to clean up correctly -->
+      <locker-summary
+        [locationName]="selectedLockerBankLocationName"
+        [lockerBankSummary]="selectedLockerBankSummary!"
+        [lockerStatus]="selectedLockerSummary"
+        (backClicked)="clearLockerSelection()">
+      </locker-summary>
+    </ng-container>
+</div>
+<!--</app-layout>-->

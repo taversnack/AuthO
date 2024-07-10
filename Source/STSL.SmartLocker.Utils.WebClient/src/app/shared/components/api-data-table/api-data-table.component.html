@@ -1,0 +1,92 @@
+<div class="relative flex-grow" [style.min-height.em]="tableSettings.minimumHeight">
+  <div *ngIf="showLoadingIndicator$ | async" class="absolute inset-0 z-50 bg-gray-200/25 backdrop-blur-sm flex items-center justify-center">
+    <mat-spinner />
+  </div>
+  <ng-container *ngIf="data$ | async as data">
+    <div class="absolute inset-0 flex flex-col" *ngIf="mappedColumns$ | async as mappedColumns">
+      <div class="flex-grow overflow-auto">
+        <table cdk-table matSort
+          [dataSource]="data?.results ?? []"
+          [attr.aria-label]="tableSettings.a11yLabel"
+          [class.horizontal-stripes]="tableSettings.useHorizontalStripes"
+          [class.vertical-stripes]="tableSettings.useVerticalStripes"
+          [class.hover-highlight]="tableSettings.useHoverHighlight"
+          (matSortChange)="emitSortingEvent($event)"
+          class="w-full"
+        >
+          <ng-container *ngFor="let column of mappedColumns">
+            <ng-container *ngIf="column.sortable; else noSort">
+              <ng-container
+                [cdkColumnDef]="column.name"
+                [sticky]="column.stickyPosition === StickyPosition.Start"
+                [stickyEnd]="column.stickyPosition === StickyPosition.End"
+              >
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header [matTooltip]="column.tooltip" [style.min-width.em]="tableSettings.minimumColumnWidthEm">
+                  {{ column.headingDisplay }}
+                </th>
+                <td cdk-cell *cdkCellDef="let row"
+                  [attr.data-label]="column.headingDisplay"
+                  [style.min-width.em]="tableSettings.minimumColumnWidthEm"
+                >
+                  <ng-container *ngIf="!column.template && !column.getValue; else useTemplateOrGetterWithSort">
+                    {{ row[column.name] }}
+                  </ng-container>
+                  <ng-template #useTemplateOrGetterWithSort>
+                    <ng-container *ngIf="column.template;">
+                      <ng-container *ngTemplateOutlet="column.template; context: $any({ $implicit: row })" />
+                    </ng-container>
+                    <ng-container *ngIf="column.getValue;">
+                      {{ column.getValue(row) }}
+                    </ng-container>
+                  </ng-template>
+                </td>
+              </ng-container>
+            </ng-container>
+            <ng-template #noSort>
+              <ng-container
+                [cdkColumnDef]="column.name"
+                [sticky]="column.stickyPosition === StickyPosition.Start"
+                [stickyEnd]="column.stickyPosition === StickyPosition.End"
+              >
+                <th cdk-header-cell *cdkHeaderCellDef [style.min-width.em]="tableSettings.minimumColumnWidthEm">
+                  {{ column.headingDisplay }}
+                </th>
+                <td cdk-cell *cdkCellDef="let row"
+                  [attr.data-label]="column.headingDisplay"
+                  [style.min-width.em]="tableSettings.minimumColumnWidthEm"
+                >
+                  <ng-container *ngIf="!column.template && !column.getValue; else useTemplateOrGetter">
+                    {{ row[column.name] }}
+                  </ng-container>
+                  <ng-template #useTemplateOrGetter>
+                    <ng-container *ngIf="column.template;">
+                      <ng-container *ngTemplateOutlet="column.template; context: $any({ $implicit: row })" />
+                    </ng-container>
+                    <ng-container *ngIf="column.getValue;">
+                      {{ column.getValue(row) }}
+                    </ng-container>
+                  </ng-template>
+                </td>
+              </ng-container>
+            </ng-template>
+          </ng-container>
+          <!-- Header and Row Declarations -->
+          <tr cdk-header-row *cdkHeaderRowDef="columnNames; sticky: tableSettings.useStickyHeader"></tr>
+          <tr cdk-row *cdkRowDef="let row; columns: columnNames"></tr>
+        </table>
+      </div>
+      <div *ngIf="!tableSettings.disablePaging">
+        <mat-paginator
+          color="primary"
+          [pageSize]="data?.recordsPerPage ?? paginationSettings.defaultPageSize"
+          [pageIndex]="data.pageIndex"
+          [length]="data.totalRecords"
+          [pageSizeOptions]="paginationSettings.pageSizeOptions"
+          [showFirstLastButtons]="paginationSettings.firstAndLastButtonsEnabled"
+          (page)="emitPagingEvent($event)"
+        />
+      </div>
+      <!-- [attr.aria-label]="paginationSettings.a11yLabel" -->
+    </div>
+  </ng-container>
+</div>

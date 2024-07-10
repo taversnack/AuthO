@@ -1,0 +1,35 @@
+<form [formGroup]="lockerForm" (ngSubmit)="submitForm()" class="grid grid-cols-1 md:grid-cols-2 gap-2 [&>*]:w-full w-full">
+  <app-text-input [settings]="lockerLabelSettings" [control]="lockerLabelControl" />
+  <app-text-input [settings]="lockerServiceTagSettings" [control]="lockerServiceTagControl" />
+
+  <mat-form-field class="md:col-span-2">
+    <mat-label>Security Type</mat-label>
+    <mat-select [formControl]="lockerSecurityTypeControl">
+      <mat-option [value]="LockerSecurityType.KeyLock" *ngIf="!allowSmartLocksOnly">Key Lock</mat-option>
+      <mat-option [value]="LockerSecurityType.CombinationLock" *ngIf="!allowSmartLocksOnly">Combination Lock</mat-option>
+      <mat-option [value]="LockerSecurityType.SmartLock">Smart Lock</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <ng-container *ngIf="showLeaseExpiryDatePicker" [formGroup]="lockerAbsoluteLeaseExpiryFormGroup">
+    <mat-form-field>
+      <mat-label>Lease End Date</mat-label>
+      <input matInput [matDatepicker]="leaseExpiryDatePicker" formControlName="date">
+      <mat-hint>DD/MM/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="leaseExpiryDatePicker" />
+      <mat-datepicker #leaseExpiryDatePicker formControlName="date" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Lease End Time</mat-label>
+      <mat-hint>00:00 - 23:59</mat-hint>
+      <input matInput type="time" formControlName="time">
+    </mat-form-field>
+  </ng-container>
+
+  <div class="align-button-with-input md:col-span-2">
+    <button mat-flat-button color="primary" type="submit" class="w-full" [disabled]="lockerForm.invalid">
+      {{ hasLocker ? 'Save' : 'Create' }} Locker
+    </button>
+  </div>
+</form>

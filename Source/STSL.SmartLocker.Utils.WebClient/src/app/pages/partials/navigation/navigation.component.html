@@ -1,0 +1,102 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row class="max-w-screen-2xl mx-auto !p-2 gap-2 justify-between">
+
+    <button mat-icon-button [routerLink]="(isUserLoggedIn$ | async) ? '/admin' : '/'" aria-label="Home">
+      <mat-icon>home</mat-icon>
+    </button>
+
+    <!--<announcekit 
+    #announceKitTemplate
+    widget="https://announcekit.co/widgets/v2/1yJmFy"
+    [user]="user">
+    <span>What's New?</span>
+  </announcekit>-->
+
+    <span class="font-semibold">Goto Secure™</span>
+    <div class="md:col-span-2">
+      <div class="flex gap-4 flex-col md:flex-row justify-center">
+        <div class="flex items-center">
+        <announcekit 
+        #announceKitTemplate
+        widget="https://announcekit.co/widgets/v2/16p3iw"
+        [user]="user">
+        <mat-icon>notifications</mat-icon>
+      </announcekit>
+    
+      <button mat-icon-button [matMenuTriggerFor]="mainMenu" aria-label="Navigation menu" (menuOpened)="menuOpened()" (menuClosed)="menuClosed()">
+        <mat-icon>{{ menuIsOpen ? 'close' : 'menu'}}</mat-icon>
+      </button>
+    </div>
+      </div>
+    </div>
+
+    <mat-menu #mainMenu="matMenu">
+      <ng-container *ngIf="userData; else noUser">
+        <ng-container *ngIf="inDevelopment">
+          <button mat-menu-item *ngFor="let role of userData.roles" (click)="toggleRole(role)">
+            <mat-icon *ngIf="isRoleEnabled(role)">done</mat-icon>
+            <span>Role: {{ role }}</span>
+          </button>
+          <mat-divider />
+        </ng-container>
+        <ng-container *ngIf="isRoleEnabled(UserRole.SuperUser)">
+          <button mat-menu-item [matMenuTriggerFor]="featureFlagsMenu">
+            <mat-icon>flag</mat-icon>
+            <span>Toggle Feature Flags</span>
+          </button>
+          <mat-divider />
+        </ng-container>
+        <ng-container *ngIf="currentTenant && currentTenant.helpPortalUrl">
+          <a mat-menu-item [href]="currentTenant.helpPortalUrl" target="_blank">
+            <mat-icon>help</mat-icon>
+            <span class="inline-flex items-center gap-2">Get Help <mat-icon inline>open_in_new</mat-icon></span>
+          </a>
+        </ng-container>
+        <mat-divider />
+        <button *ngIf="userData.tenants.length > 1" mat-menu-item [matMenuTriggerFor]="tenantsMenu">
+          <mat-icon>domain</mat-icon>
+          <span>Switch Tenant</span>
+        </button>
+        <button mat-menu-item (click)="logoutUser()">
+          <mat-icon>meeting_room</mat-icon>
+          <span>Logout</span>
+        </button>
+        <mat-menu #tenantsMenu="matMenu">
+          <ng-container>
+            <div *ngFor="let tenant of userData.tenants" class="flex">
+              <div mat-menu-item (click)="switchTenant(tenant.id)">
+                <mat-icon *ngIf="selectedTenant && checkEntityIdEquality(selectedTenant, tenant.id)">done</mat-icon>
+                <span class="inline-flex items-center gap-2">
+                  <ng-container *ngIf="!tenant.name">
+                    <mat-spinner [diameter]="24" [strokeWidth]="4" class="inline-block" />
+                    <span>Loading tenant..</span>
+                  </ng-container>
+                  <ng-container *ngIf="tenant.name">
+                    <span>{{ tenant.name }}</span>
+                  </ng-container>
+                </span>
+              </div>
+              <ng-container *ngIf="tenant.name">
+                <button mat-icon-button [attr.aria-label]="'Toggle favourite tenant ' + tenant.name" (click)="toggleFavouriteTenant(tenant, $event)">
+                  <mat-icon>{{ checkEntityIdEquality(tenant.id, favouriteTenantId) ? 'favorite' : 'favorite_border' }}</mat-icon>
+                </button>
+              </ng-container>
+            </div>
+          </ng-container>
+        </mat-menu>
+        <mat-menu #featureFlagsMenu="matMenu">
+          <button mat-menu-item *ngFor="let flag of featureFlags" (click)="toggleFeatureFlag(flag.value)">
+            <mat-icon>{{ isFeatureFlagSet(flag.value) ? 'flag' : 'outlined_flag' }}</mat-icon>
+            <span>{{ flag.name }}</span>
+          </button>
+        </mat-menu>
+      </ng-container>
+      <ng-template #noUser>
+        <button mat-menu-item (click)="loginUser()">
+          <mat-icon>account_circle</mat-icon>
+          <span>Login</span>
+        </button>
+      </ng-template>
+    </mat-menu>
+  </mat-toolbar-row>
+</mat-toolbar>

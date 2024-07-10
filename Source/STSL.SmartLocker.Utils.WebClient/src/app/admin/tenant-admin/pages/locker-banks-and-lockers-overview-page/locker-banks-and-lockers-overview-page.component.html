@@ -1,0 +1,49 @@
+<app-layout pageTitle="Manage Locker Banks & Lockers" [fullHeight]="true">
+  <div class="flex flex-col h-full">
+    <mat-tab-group dynamicHeight preserveContent [(selectedIndex)]="selectedTabIndex">
+      <mat-tab label="Locations">
+        <admin-locations-view
+          [permissions]="locationPermissions"
+          [useAdminRegisteredLocationsOnly]="false"
+          (viewLockerBanksClicked)="viewLockerBanksForLocation($event)" />
+      </mat-tab>
+      <mat-tab label="Banks">
+        <admin-locker-banks-view
+          [permissions]="lockerBankPermissions"
+          [currentlySelectedLocation$]="currentlySelectedLocation$"
+          [useAdminRegisteredLockerBanksOnly]="false"
+          [allowShowingAll]="false"
+          [lockerBankActions]="lockerBankActions"
+          (currentlySelectedLocationChanged)="viewLockerBanksForLocation($event)"
+          (viewLockersClicked)="viewLockersForLockerBank($event)" />
+        </mat-tab>
+        <mat-tab label="Lockers">
+          <ng-template matTabContent>
+            <admin-lockers-and-locks-view
+              [lockerPermissions]="lockerPermissions"
+              [lockerBankActions]="lockerBankActions"
+              [currentlySelectedLockerBank$]="currentlySelectedLockerBank$"
+              [allowShowingAll]="true"
+              (currentlySelectedLockerBankChanged)="viewLockersForLockerBank($event)" />
+          </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</app-layout>
+
+<ng-template #lockerBankActions let-lockerBank>
+  <ng-container *ngIf="lockerBank">
+    <button mat-menu-item (click)="addSpecialCardCredentialsForLockerBank(lockerBank)">
+      <mat-icon color="primary">credit_card</mat-icon>
+      <span>Manage Special Cards</span>
+    </button>
+    <button mat-menu-item (click)="openReplaceLockerBankAdminsDialog(lockerBank)">
+      <mat-icon color="primary">supervisor_account</mat-icon>
+      <span>Manage Admins</span>
+    </button>
+  </ng-container>
+  <button mat-menu-item (click)="moveLockersFromLockerBank(lockerBank)">
+    <mat-icon color="primary">view_module</mat-icon>
+    <span>Move Lockers</span>
+  </button>
+</ng-template>

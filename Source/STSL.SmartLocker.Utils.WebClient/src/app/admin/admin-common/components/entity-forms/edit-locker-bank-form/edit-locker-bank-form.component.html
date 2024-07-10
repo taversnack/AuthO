@@ -1,0 +1,26 @@
+<form [formGroup]="lockerBankForm" (ngSubmit)="submitForm()" class="grid grid-cols-1 md:grid-cols-2 gap-2 [&>*]:w-full w-full">
+
+  <app-text-input [settings]="lockerBankNameSettings" [control]="lockerBankNameControl" />
+  <app-text-input [settings]="lockerBankDescriptionSettings" [control]="lockerBankDescriptionControl" />
+
+  <mat-form-field>
+    <mat-label>Behaviour</mat-label>
+    <mat-select [formControl]="lockerBankBehaviourControl">
+      <mat-option [value]="LockerBankBehaviour.Unset">Installation</mat-option>
+      <mat-option [value]="LockerBankBehaviour.Permanent">Permanent</mat-option>
+      <mat-option [value]="LockerBankBehaviour.Temporary" [disabled]="disableTemporaryLockerBanks">Temporary</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Default Lease Duration</mat-label>
+    <input matInput type="text" [formControl]="lockerBankDefaultLeaseDurationControl" placeholder="00:16:00">
+    <mat-hint align="end">DD:HH:MM</mat-hint>
+  </mat-form-field>
+
+  <div class="align-button-with-input md:col-span-2">
+    <button mat-flat-button color="primary" type="submit" class="w-full" [disabled]="lockerBankForm.invalid">
+      {{ hasLockerBank ? 'Save' : 'Create' }} Locker Bank
+    </button>
+  </div>
+</form>

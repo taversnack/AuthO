@@ -1,0 +1,30 @@
+﻿<Window x:Class="STSL.SmartLocker.Utils.Kiosk.App.Wrapper.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+	    xmlns:prism="http://prismlibrary.com/" 
+	    xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+	    xmlns:behaviors="clr-namespace:STSL.SmartLocker.Utils.Kiosk.App.Wrapper.Behaviors"
+        Title="{Binding Title}"
+        WindowStyle="None"
+        BorderBrush="Black"
+        BorderThickness="5"
+        AllowsTransparency="True"
+        Width="525"
+        Height="350"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        WindowState="Maximized">
+    <Grid>
+        <wpf:WebView2 x:Name="webView" Source="https://localhost:5001" x:FieldModifier="public" >
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="WebMessageReceived">
+                    <prism:InvokeCommandAction Command="{Binding OnWebMessageReceivedCommand, Mode=OneTime}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <i:Interaction.Behaviors>
+                <behaviors:WebViewInitializationBehavior />
+                <behaviors:WebViewPostMessageBehavior />
+            </i:Interaction.Behaviors>
+        </wpf:WebView2>
+    </Grid>
+</Window>

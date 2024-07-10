@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "JSON Schema for UCLH Location & Locker banks specification",
+
+  "type": "object",
+
+  "properties": {
+    "locations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The unique name of the location e.g. 'Main building - 1F'",
+            "minLength": 2,
+            "maxLength": 256
+          },
+          "description": {
+            "type": "string",
+            "description": "Any additional description",
+            "maxLength": 256
+          },
+          "banks": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "The name of the bank that uniquely identifies it within its location e.g. 'Neurology Dept - Permanent'",
+                      "minLength": 2,
+                      "maxLength": 256
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Any additional description e.g. 'Opposite entrance on left hand side'",
+                      "maxLength": 256
+                    },
+                    "mode": {
+                      "enum": [ "permanent" ],
+                      "description": "The operating behaviour of the bank. May be 'permanent' or 'temporary'"
+                    },
+                    "lockers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "The label that uniquely identifies a locker within its bank",
+                        "maxLength": 256,
+                        "minLength": 1
+                      },
+                      "minItems": 1
+                    }
+                  },
+                  "required": [ "name", "mode" ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "The name of the bank that uniquely identifies it within its location e.g. 'Neurology Dept - Permanent'",
+                      "minLength": 2,
+                      "maxLength": 256
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Any additional description e.g. 'Opposite entrance on left hand side'",
+                      "maxLength": 256
+                    },
+                    "mode": {
+                      "enum": [ "temporary" ],
+                      "description": "The operating behaviour of the bank. May be 'permanent' or 'temporary'"
+                    },
+                    "leaseDurationInHours": {
+                      "type": "number",
+                      "description": "The lease duration for each locker in hours. This can be a floating point number e.g. 7.5 would be 7 hours and 30 minutes"
+                    },
+                    "lockers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "The label that uniquely identifies a locker within its bank",
+                        "maxLength": 256,
+                        "minLength": 1
+                      },
+                      "minItems": 1
+                    }
+                  },
+                  "required": [ "name", "mode", "leaseDurationInHours" ]
+                }
+              ]
+            }
+          }
+        },
+        "required": [ "name", "banks" ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [ "locations" ]
+}

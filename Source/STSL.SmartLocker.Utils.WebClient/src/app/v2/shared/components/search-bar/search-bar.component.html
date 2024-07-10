@@ -1,0 +1,16 @@
+<form class="contents search-bar-container" (ngSubmit)="submitSearch()">
+  <!-- Custom search icon -->
+  <span class="search-icon">
+    <fa-icon [icon]="faMagnifyingGlass" class="mr-2"></fa-icon> <!-- Adjusted spacing -->
+  </span>
+  <!-- Custom Input Field -->
+  <input
+    type="search"
+    [formControl]="formControl"
+    class="custom-input"
+    [placeholder]="label"
+  />
+  <button *ngIf="formControl.value" (click)="clearInput()" type="button" class="clear-button">
+    <mat-icon>close</mat-icon>
+</button>
+</form>

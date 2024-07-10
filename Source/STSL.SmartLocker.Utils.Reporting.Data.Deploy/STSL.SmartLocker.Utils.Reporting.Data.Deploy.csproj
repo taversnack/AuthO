@@ -1,0 +1,69 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>9c53fa35-8ce2-48af-8566-d157c9dfa9de</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="appsettings.json" />
+    <None Remove="Scripts\Functions\slkmart.GetWithCreateCardCredentialId.sql" />
+    <None Remove="Scripts\Functions\slkmart.TrueCase.sql" />
+    <None Remove="Scripts\Schema\0001 - InitialCreate.sql" />
+    <None Remove="Scripts\Schema\0002 - AddBoundaryColumn.sql" />
+    <None Remove="Scripts\Schema\0003 - KeepAliveMessages.sql" />
+    <None Remove="Scripts\Schema\0004 - BluBugMessages Indexes.sql" />
+    <None Remove="Scripts\Schema\0005 - LockAudits Indexes.sql" />
+    <None Remove="Scripts\Schema\0006 - DropBluBugRawMessages.sql" />
+    <None Remove="Scripts\Schema\0007 - UpdateBluBugAuditTypes.sql" />
+    <None Remove="Scripts\StoredProcedures\slk.ListAuditRecordsForLocker.sql" />
+    <None Remove="Scripts\StoredProcedures\slk.ListLockersWithStatusForLockerBank.sql" />
+    <None Remove="Scripts\StoredProcedures\slk.ProcessMSIData.sql" />
+    <None Remove="Scripts\StoredProcedures\slkmart.ProcessBluBugMessage.sql" />
+    <None Remove="Scripts\StoredProcedures\slkmart.ProcessKeepAliveMessage.sql" />
+    <None Remove="Scripts\StoredProcedures\slkmart.SaveBluBugRawMessage.sql" />
+    <None Remove="Scripts\Views\0001 - slkmart.LockCurrentStatuses.sql" />
+    <None Remove="Scripts\Views\0002 - slkmart.LockAuditRecords.sql" />
+    <None Remove="Scripts\Views\0003 - slk.LockersWithStatus.sql" />
+    <None Remove="Scripts\Views\0004 - slk.LockerBankSummaries.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\Functions\slkmart.TrueCase.sql" />
+    <EmbeddedResource Include="Scripts\Schema\0007 - UpdateBluBugAuditTypes.sql" />
+    <EmbeddedResource Include="Scripts\Schema\0006 - DropBluBugRawMessages.sql" />
+    <EmbeddedResource Include="Scripts\Schema\0005 - LockAudits Indexes.sql" />
+    <EmbeddedResource Include="Scripts\Schema\0004 - BluBugMessages Indexes.sql" />
+    <EmbeddedResource Include="Scripts\Schema\0003 - KeepAliveMessages.sql" />
+    <EmbeddedResource Include="Scripts\Schema\0002 - AddBoundaryColumn.sql" />
+    <EmbeddedResource Include="Scripts\StoredProcedures\slk.ProcessMSIData.sql" />
+    <EmbeddedResource Include="Scripts\StoredProcedures\slk.ListLockersWithStatusForLockerBank.sql" />
+    <EmbeddedResource Include="Scripts\StoredProcedures\slk.ListAuditRecordsForLocker.sql" />
+    <EmbeddedResource Include="Scripts\StoredProcedures\slkmart.ProcessKeepAliveMessage.sql" />
+    <EmbeddedResource Include="Scripts\StoredProcedures\slkmart.GetWithCreateCardCredentialId.sql" />
+    <EmbeddedResource Include="Scripts\Schema\0001 - InitialCreate.sql" />
+    <EmbeddedResource Include="Scripts\StoredProcedures\slkmart.SaveBluBugRawMessage.sql" />
+    <EmbeddedResource Include="Scripts\StoredProcedures\slkmart.ProcessBluBugMessage.sql" />
+    <EmbeddedResource Include="Scripts\Views\0004 - slk.LockerBankSummaries.sql" />
+    <EmbeddedResource Include="Scripts\Views\0003 - slk.LockersWithStatus.sql" />
+    <EmbeddedResource Include="Scripts\Views\0002 - slkmart.LockAuditRecords.sql" />
+    <EmbeddedResource Include="Scripts\Views\0001 - slkmart.LockCurrentStatuses.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dbup-sqlserver" Version="5.0.40" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>

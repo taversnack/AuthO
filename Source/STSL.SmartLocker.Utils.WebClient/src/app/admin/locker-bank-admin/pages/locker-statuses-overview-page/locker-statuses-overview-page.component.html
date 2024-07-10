@@ -1,0 +1,26 @@
+<app-layout pageTitle="Manage Lockers & View Statuses" [fullHeight]="true">
+  <div class="flex flex-col h-full">
+    <mat-tab-group dynamicHeight preserveContent [(selectedIndex)]="selectedTabIndex">
+      <mat-tab label="Locations" [disabled]="hideLocationsTab">
+        <ng-template matTabContent>
+          <admin-locations-view (viewLockerBanksClicked)="viewLockerBanksForLocation($event)" />
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Banks" [disabled]="hideLockerBanksTab">
+        <ng-template matTabContent>
+          <admin-locker-banks-view
+            [currentlySelectedLocation$]="currentlySelectedLocation$"
+            [allowShowingAll]="false"
+            (viewLockersClicked)="viewLockerStatusesForLockerBank($event)"
+            (currentlySelectedLocationChanged)="viewLockerBanksForLocation($event)"
+          />
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Lockers">
+        <ng-template matTabContent>
+          <admin-locker-statuses-view [currentlySelectedLockerBank$]="currentlySelectedLockerBank$" />
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</app-layout>

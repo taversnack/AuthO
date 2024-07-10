@@ -1,0 +1,45 @@
+<!-- Back Button -->
+<div class="back-button-container">
+    <button (click)="backClicked.emit()" class="back-button">
+        <div class="back-button-content">
+          <fa-icon [icon]="faBackArrow" class="mr-2"></fa-icon>
+          <p class="text-sm">Back</p>
+        </div>
+      </button>
+</div>
+
+<!-- Header -->
+<div class="locker-overview-header">
+    <h2 class="text-black">{{locationName}}</h2>
+    <h3 class="ml-4 text-gray-700">{{ lockerBank.name }}</h3>
+</div>
+
+<!-- Filter Buttons -->
+<div class="filter-buttons-container">
+    <mat-button-toggle-group class="filter-buttons flex" name="filters" aria-label="Filter" [(value)]="buttonFilter" (change)="applyButtonFilter($event.value)">
+        <mat-button-toggle value="" class="filter-button"><span class="filter-button-text">All</span></mat-button-toggle>
+        <mat-button-toggle value="vacant" class="filter-button"><span class="filter-button-text">Vacant</span></mat-button-toggle>
+        <mat-button-toggle value="allocated" class="filter-button"><span class="filter-button-text">Allocated</span></mat-button-toggle>
+        <mat-button-toggle value="alerts" class="filter-button"><span class="filter-button-text">Alerts</span></mat-button-toggle>
+    </mat-button-toggle-group>
+</div>
+
+<!-- Content -->
+<div class="locker-section">
+    <!-- Search Bar -->
+    <app-search-bar-v2
+        label="Search Lockers"
+        [filters]="lockerFilters"
+        (searchSubmitted)="searchLockers($event)"
+    />
+    <!-- Virtual Scroll (Infinite)-->
+    <cdk-virtual-scroll-viewport itemSize="160" class="viewport mb-4" (scrolledIndexChange)="onScroll()">
+        <locker-summary-card *cdkVirtualFor="let lockerStatus of lockerStatuses$ | async"
+            [lockerSummary]="lockerStatus"
+            (cardClicked)="handleCardClick($event)">
+        </locker-summary-card>
+        <div *ngIf="isLoadingLockerStatuses$ | async" class=" inset-0 z-50 backdrop-blur-sm flex items-center justify-center spinner">
+            <mat-spinner diameter="30"></mat-spinner>  <!-- Ensure the spinner is visible by setting a diameter --> <!--*ngIf="isLoadingLockerStatuses$ | async"-->
+        </div>
+    </cdk-virtual-scroll-viewport>
+</div>

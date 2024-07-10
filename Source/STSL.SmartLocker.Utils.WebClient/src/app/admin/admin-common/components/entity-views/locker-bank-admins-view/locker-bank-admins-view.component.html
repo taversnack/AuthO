@@ -1,0 +1,51 @@
+<div class="flex flex-col h-full">
+  <div class="flex flex-col gap-2 sm:flex-row flex-wrap [&>*]:flex-grow" *ngIf="currentlySelectedLockerBank">
+    <h3 class="text-center">{{ currentlySelectedLockerBank.name }}</h3>
+    <button mat-flat-button color="primary" (click)="openReplaceLockerBankAdminsDialog()" *ngIf="permissions.allowCreating">
+      Assign Locker Bank Admins
+      <mat-icon matSuffix>add</mat-icon>
+    </button>
+  </div>
+  <app-search-bar
+    label="Search {{ cardHolderAliasPlural }}"
+    [filters]="lockerBankAdminFilters"
+    (filtersChanged)="lockerBankAdminFiltersChanged($event)"
+    (searchSubmitted)="searchLockerBankAdmins($event)"
+  />
+  <app-api-data-table
+    [data$]="lockerBankAdmins$"
+    [showLoadingIndicator$]="isLoadingLockerBankAdmins$"
+    [columns]="['firstName', 'lastName', 'email', { name: 'uniqueIdentifier', headingDisplay: cardHolderUniqueIdentifierAlias }, { name: 'actions', template: actions, stickyPosition: StickyPosition.End }]"
+    (pagingEvent)="onPagingEvent($event)"
+  />
+</div>
+
+<ng-template #actions let-lockerBankAdmin>
+  <div class="flex flex-col xl:flex-row gap-2 [&>*]:flex-grow w-full py-1">
+    <ng-container *ngIf="showActionsButton; else showInlineActions">
+      <button mat-flat-button color="primary" [matMenuTriggerFor]="actionsMenu">
+        Actions
+      </button>
+      <mat-menu #actionsMenu="matMenu" xPosition="before">
+        <ng-template matMenuContent>
+
+          <button mat-menu-item (click)="removeLockerBankAdmin(lockerBankAdmin)" *ngIf="permissions.allowDeleting">
+            <mat-icon color="warn">delete</mat-icon>
+            <span>Remove</span>
+          </button>
+          <ng-container *ngIf="lockerBankAdminActions">
+            <mat-divider />
+            <ng-container *ngTemplateOutlet="lockerBankAdminActions; context: $any({ $implicit: lockerBankAdmin })" />
+          </ng-container>
+        </ng-template>
+      </mat-menu>
+    </ng-container>
+
+    <ng-template #showInlineActions>
+      <button mat-flat-button color="warn" (click)="removeLockerBankAdmin(lockerBankAdmin)" *ngIf="permissions.allowDeleting">Remove</button>
+      <ng-container *ngIf="lockerBankAdminActions && inlineActions">
+        <ng-container *ngTemplateOutlet="lockerBankAdminActions; context: $any({ $implicit: lockerBankAdmin })" />
+      </ng-container>
+    </ng-template>
+  </div>
+</ng-template>

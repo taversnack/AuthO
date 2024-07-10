@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "STSL.SmartLocker.Utils.BluBugMessageConsume": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7289",
+      "launchBrowser": false
+    }
+  }
+}

@@ -1,0 +1,90 @@
+<div class="flex flex-col h-full">
+  <div class="flex flex-col gap-2 sm:flex-row flex-wrap [&>*]:flex-grow">
+    <h3 class="text-center" *ngIf="currentlySelectedLockerBank">{{ currentlySelectedLockerBank.name }}</h3>
+    <ng-container *ngIf="showLockerBankActionsButton">
+      <button mat-flat-button color="primary" [matMenuTriggerFor]="actionsMenu">
+        Actions
+      </button>
+      <mat-menu #actionsMenu="matMenu" xPosition="before">
+        <ng-container *ngIf="currentlySelectedLockerBank">
+          <button mat-menu-item (click)="viewAllLockers()" *ngIf="allowShowingAll">
+            <mat-icon color="accent">all_inclusive</mat-icon>
+            Show all Lockers
+          </button>
+          <mat-divider *ngIf="lockerPermissions.allowCreating || lockerBankActions"/>
+          <button mat-menu-item (click)="createOrEditLocker()" *ngIf="lockerPermissions.allowCreating">
+            <mat-icon color="primary">add</mat-icon>
+            <span>Create Locker</span>
+          </button>
+        </ng-container>
+        <ng-container *ngIf="lockerBankActions">
+          <ng-container *ngTemplateOutlet="lockerBankActions; context: $any({ $implicit: currentlySelectedLockerBank })" />
+        </ng-container>
+      </mat-menu>
+    </ng-container>
+  </div>
+  <app-search-bar
+    label="Search Lockers"
+    [filters]="lockerAndLockFilters"
+    (filtersChanged)="lockerAndLockFiltersChanged($event)"
+    (searchSubmitted)="searchLockerAndLocks($event)"
+  />
+  <app-api-data-table
+    [data$]="lockerAndLocks$"
+    [showLoadingIndicator$]="isLoadingLockerAndLocks$"
+    [columns]="lockerAndLockColumns$"
+    (pagingEvent)="onPagingEvent($event)"
+    (sortingEvent)="onSortingEvent($event)"
+  />
+</div>
+
+<ng-template #lockerAndLockActionsTemplate let-lockerAndLock>
+  <div class="flex flex-col lg:flex-row gap-2 [&>*]:flex-grow w-full py-1">
+    <ng-container *ngIf="showLockerAndLockActionsButton">
+      <button mat-flat-button color="primary" [matMenuTriggerFor]="actionsMenu">
+        Actions
+      </button>
+      <mat-menu #actionsMenu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="createOrEditLocker(lockerAndLock)" *ngIf="lockerPermissions.allowEditing">
+          <mat-icon color="primary">edit</mat-icon>
+          <span>Edit Locker</span>
+        </button>
+        <button
+          *ngIf="lockerPermissions.allowDeleting"
+          mat-menu-item
+          [disabled]="lockerAndLock.lock"
+          [matTooltipDisabled]="!lockerAndLock.lock"
+          matTooltipPosition="left"
+          [matTooltip]="lockerAndLock.lock ? 'Remove Lock before deleting Locker' : ''"
+          (click)="deleteLocker(lockerAndLock.locker)"
+        >
+          <mat-icon color="warn">delete</mat-icon>
+          <span>Delete Locker</span>
+        </button>
+        <ng-template matMenuContent>
+          <ng-container *ngIf="lockerAndLockActions && !inlineLockerAndLockActions">
+            <ng-container *ngTemplateOutlet="lockerAndLockActions; context: $any({ $implicit: lockerAndLock })" />
+          </ng-container>
+        </ng-template>
+      </mat-menu>
+    </ng-container>
+    <ng-container *ngIf="lockerAndLockActions && inlineLockerAndLockActions">
+      <ng-container *ngTemplateOutlet="lockerAndLockActions; context: $any({ $implicit: lockerAndLock })" />
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #installationDateColumn let-lockerAndLock>
+  <time class="whitespace-nowrap" [attr.datetime]="lockerAndLock.lock.installationDateUtc" *ngIf="lockerAndLock.lock">
+    {{ lockerAndLock.lock.installationDateUtc | date }}
+  </time>
+</ng-template>
+
+<ng-template #otherInfoColumn let-lockerAndLock>
+  <div>
+    Locker Id: {{ lockerAndLock.locker.id }}
+  </div>
+  <div *ngIf="lockerAndLock.lock">
+    Lock Id: {{ lockerAndLock.lock.id }}
+  </div>
+</ng-template>

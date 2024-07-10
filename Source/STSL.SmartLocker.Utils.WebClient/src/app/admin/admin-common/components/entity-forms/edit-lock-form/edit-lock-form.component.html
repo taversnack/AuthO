@@ -1,0 +1,45 @@
+<form [formGroup]="lockForm" (ngSubmit)="submitForm()" class="grid grid-cols-1 md:grid-cols-2 gap-2 [&>*]:w-full w-full">
+  <mat-form-field class="w-full">
+    <mat-label>Serial Number</mat-label>
+    <input type="text" matInput [formControl]="lockSerialNumberControl">
+    <mat-hint align="end" aria-label="32 characters or less">
+      {{ (lockSerialNumberControl.value?.length ?? 0) + '/32'}}
+    </mat-hint>
+    <mat-error *ngIf="lockSerialNumberControl.hasError('required')">
+      Serial Number is required
+    </mat-error>
+    <mat-error *ngIf="lockSerialNumberControl.hasError('maxlength')">
+      Serial Number too long
+    </mat-error>
+    <mat-error *ngIf="lockSerialNumberControl.hasError('pattern')">
+      Numerical values only
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Installation Date</mat-label>
+    <input matInput [matDatepicker]="installationDatePicker" [formControl]="lockInstallationDateLocalTimeControl">
+    <mat-hint>DD/MM/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="installationDatePicker" />
+    <mat-datepicker #installationDatePicker [touchUi]="isSmallScreen$ | async" />
+  </mat-form-field>
+
+  <app-text-input [settings]="lockFirmwareVersionSettings" [control]="lockFirmwareVersionControl" />
+
+  <mat-form-field>
+    <mat-label>Operating Mode</mat-label>
+    <mat-select [formControl]="lockOperatingModeControl">
+      <mat-option [value]="LockOperatingMode.Installation">Installation</mat-option>
+      <mat-option [value]="LockOperatingMode.Shared">Shared</mat-option>
+      <mat-option [value]="LockOperatingMode.Dedicated">Dedicated</mat-option>
+      <mat-option [value]="LockOperatingMode.Confiscated">Confiscated</mat-option>
+      <mat-option [value]="LockOperatingMode.Reader">Reader</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="align-button-with-input md:col-span-2">
+    <button mat-flat-button color="primary" type="submit" class="w-full" [disabled]="lockForm.invalid">
+      {{ currentLockLockerId ? 'Save' : 'Create' }} Lock
+    </button>
+  </div>
+</form>

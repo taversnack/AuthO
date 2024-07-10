@@ -1,0 +1,6 @@
+<p class="my-4" *ngFor="let paragraph of paragraphs">
+  {{ paragraph }}
+</p>
+<div class="flex gap-2">
+  <button mat-flat-button cdkFocusInitial [color]="data?.actionThemeColour ?? 'primary'" (click)="close()">{{ data?.actionLabel }}</button>
+</div>

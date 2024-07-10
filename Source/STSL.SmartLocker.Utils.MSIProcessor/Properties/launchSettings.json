@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "STSL.SmartLocker.Utils.MSIProcessor": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7296",
+      "launchBrowser": false
+    }
+  }
+}

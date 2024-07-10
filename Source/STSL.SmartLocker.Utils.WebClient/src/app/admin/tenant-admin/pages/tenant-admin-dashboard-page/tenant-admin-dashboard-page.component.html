@@ -1,0 +1,17 @@
+<app-layout pageTitle="Dashboard" [fullHeight]="true">
+  <div class="flex flex-col h-full">
+    <mat-nav-list>
+      <!-- Allow editing of own tenant data? -->
+      <!-- <a mat-list-item routerLink="tenants">Manage Tenant</a> -->
+      <a mat-list-item routerLink="locker-banks-and-lockers">Manage Locations, Locker Banks and Lockers</a>
+      <!-- Allow only to installer and super user role? -->
+      <!-- <a mat-list-item routerLink="locks">Manage Locks</a> -->
+      <a mat-list-item routerLink="locker-statuses-and-audits">Manage Locker Owners & View Statuses</a>
+      <a mat-list-item routerLink="card-holders-and-credentials">Manage {{ cardHolderAliasPlural$ | async }} and Credentials</a>
+      <!-- <a mat-list-item routerLink="locker-bank-admins">Manage Locker Bank Admins</a> -->
+    </mat-nav-list>
+    <div class="flex items-center justify-center mt-auto mb-8 p-4">
+      <img [src]="tenantLogoSrc$ | async" alt="" class="max-h-24">
+    </div>
+  </div>
+</app-layout>

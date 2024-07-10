@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.Common\STSL.SmartLocker.Utils.Common.csproj" />
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.Domain\STSL.SmartLocker.Utils.Domain.csproj" />
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.DTO\STSL.SmartLocker.Utils.DTO.csproj" />
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.Enrolment.WebApp\STSL.SmartLocker.Utils.Enrolment.WebApp.csproj" />
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.Kiosk.Models\STSL.SmartLocker.Utils.Kiosk.Models.csproj" />
+  </ItemGroup>
+
+</Project>

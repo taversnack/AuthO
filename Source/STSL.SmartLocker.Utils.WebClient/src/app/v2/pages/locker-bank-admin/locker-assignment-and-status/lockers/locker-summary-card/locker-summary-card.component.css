@@ -1,0 +1,56 @@
+
+/* Card Styles */
+.locker-card {
+    color: #4B5563; /* text-gray-800 */
+    background-color: white;
+    height: 160px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 2px 1px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.locker-card:hover {
+    background-color: #F3F4F6; /* hover:bg-gray-100 */
+    cursor: pointer; 
+}
+
+/* Card Header */
+.locker-card-title {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    display: flex;
+    align-items: center;
+    color: black;
+}
+
+/* Online / Offline Status */
+.lock-status-chip {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    margin-left: 0.5rem;
+    margin-right: 0.75rem;
+}
+
+.status-circle {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+  }
+
+.online-circle {
+  background-color: #57C4AD;
+}
+
+.offline-circle {
+  background-color: #DB4352;
+}
+
+.lock-status-online > span, .lock-status-offline > span {
+  color: #DB4352; /* default to offline/red */
+}
+
+.lock-status-online > span {
+  color: #57C4AD; /* override for online */
+}

@@ -1,0 +1,109 @@
+/* .zebra-stripes tr:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.125);
+} */
+
+.horizontal-stripes tr:nth-child(even) td {
+  background-color: hsl(0, 0%, 92.5%);
+}
+
+.vertical-stripes td:nth-child(even), .vertical-stripes th:nth-child(even) {
+  background-color: hsl(0, 0%, 92.5%);
+}
+
+.horizontal-stripes.vertical-stripes tr:nth-child(even) td:nth-child(even),
+.horizontal-stripes.vertical-stripes tr:nth-child(even) th:nth-child(even) {
+  background-color: hsl(0, 0%, 85%);
+}
+
+.hover-highlight tr:hover td,
+.hover-highlight tr:focus-within td {
+  background-color: hsl(200, 30%, 80%);
+}
+
+th {
+  background-color: white;
+  text-align: left;
+  font-weight: unset;
+  vertical-align: bottom;
+}
+
+td {
+  background-color: white;
+}
+
+th,
+td {
+  text-align: left;
+  min-width: max-content;
+  padding: 0 .5em;
+}
+
+th:first-of-type,
+td:first-of-type {
+  padding-inline-start: 1em;
+}
+
+th:last-of-type,
+td:last-of-type {
+  padding-inline-end: 1em;
+}
+
+tr {
+  border-block-end: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+tr:last-of-type {
+  border-block-end: unset;
+}
+
+/* Equivalent to TailWindCSS md breakpoint */
+@media screen and (max-width: 767px) {
+  table,
+  :host ::ng-deep tbody,
+  tr,
+  td {
+    display: block;
+  }
+
+  th:first-of-type,
+  td:first-of-type {
+    padding-inline-start: .5rem;
+  }
+
+  th:last-of-type,
+  td:last-of-type {
+    padding-inline-end: .5rem;
+  }
+
+  th {
+    display: none;
+  }
+
+  tr {
+    padding: .5rem 1rem;
+  }
+
+  td::before {
+    content: attr(data-label) ': ' ;
+    font-weight: 600;
+    display: block;
+  }
+
+  th,
+  td {
+    min-width: unset;
+  }
+
+  td {
+    padding-block: .5rem;
+  }
+
+  .vertical-stripes td:nth-child(even), .vertical-stripes th:nth-child(even) {
+    background-color: white;
+  }
+
+  .horizontal-stripes.vertical-stripes tr:nth-child(even) td:nth-child(even),
+  .horizontal-stripes.vertical-stripes tr:nth-child(even) th:nth-child(even) {
+    background-color: hsl(0, 0%, 92.5%);
+  }
+}

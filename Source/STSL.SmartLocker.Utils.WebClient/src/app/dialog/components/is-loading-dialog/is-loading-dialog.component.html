@@ -1,0 +1,10 @@
+<div class="rounded-full p-2 bg-white" *ngIf="!data?.useAlertMessage; else showSpinnerWithMessage">
+  <mat-spinner />
+</div>
+
+<ng-template #showSpinnerWithMessage>
+  <p>
+    {{ data?.useAlertMessage }}
+  </p>
+  <mat-spinner />
+</ng-template>

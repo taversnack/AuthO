@@ -1,0 +1,33 @@
+<form [formGroup]="tenantForm" (ngSubmit)="submitForm()" class="grid grid-cols-1 md:grid-cols-2 gap-2 [&>*]:w-full w-full">
+
+  <app-text-input [settings]="tenantNameSettings" [control]="tenantNameControl" />
+  <app-text-input [settings]="tenantCardHolderAliasSingularSettings" [control]="tenantCardHolderAliasSingularControl" />
+  <app-text-input [settings]="tenantCardHolderAliasPluralSettings" [control]="tenantCardHolderAliasPluralControl" />
+  <app-text-input [settings]="tenantUniqueIdentifierAliasSettings" [control]="tenantUniqueIdentifierAliasControl" />
+  <app-text-input [settings]="tenantHelpPortalUrlSettings" [control]="tenantHelpPortalUrlControl" />
+
+  <label>
+      <span class="block">Upload Logo</span>
+      <input type="file" [accept]="acceptedLogoMimeTypes" #logoInput (change)="setLogo()">
+  </label>
+
+  <mat-slide-toggle [formControl]="tenantAllowLockUpdates" (toggleChange)="warnUserAboutTogglingLockUpdates()">
+    Allow Lock Updates?
+  </mat-slide-toggle>
+  
+  <div class="md:col-span-2">
+    <div class="flex gap-2 flex-col md:flex-row">
+      <button mat-flat-button color="primary" class="w-full" type="submit" [disabled]="tenantForm.invalid">
+        {{ hasTenant ? 'Save' : 'Create' }} Tenant
+      </button>
+      <button mat-flat-button color="warn" class="w-full" type="button" [disabled]="!hasTenant" (click)="cancelEditing()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+</form>
+
+<div class="flex items-center justify-center my-4">
+  <img [src]="tenantLogoPreviewSrc" alt="" class="h-24">
+</div>

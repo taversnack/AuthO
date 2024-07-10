@@ -1,0 +1,8 @@
+<mat-form-field class="w-full">
+  <mat-label>Search Filters</mat-label>
+  <mat-select multiple [value]="initialValue" (selectionChange)="emitIfFiltersChanged($event)">
+    <mat-option *ngFor="let filter of mappedFilters" [value]="filter.name">
+      {{ filter.display }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

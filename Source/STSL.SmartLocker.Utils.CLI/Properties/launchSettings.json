@@ -1,0 +1,38 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "Put config": {
+      "commandName": "Project",
+      "commandLineArgs": "put -f .\\Examples\\locker-config.json",
+      "hotReloadEnabled": false
+    },
+    "Patch config": {
+      "commandName": "Project",
+      "commandLineArgs": "patch -f .\\Examples\\locker-config.json",
+      "hotReloadEnabled": false
+    },
+    "Patch setup": {
+      "commandName": "Project",
+      "commandLineArgs": "patch -m -f .\\Examples\\lockers-setup.json",
+      "hotReloadEnabled": false
+    },
+    "Get config": {
+      "commandName": "Project",
+      "commandLineArgs": "get 1116691",
+      "hotReloadEnabled": false
+    },
+    "Get simplified config": {
+      "commandName": "Project",
+      "commandLineArgs": "get 1116690 -s",
+      "hotReloadEnabled": false
+    },
+    "Put setup": {
+      "commandName": "Project",
+      "commandLineArgs": "put -m -f .\\Examples\\lockers-setup.json",
+      "hotReloadEnabled": false
+    }
+  }
+}

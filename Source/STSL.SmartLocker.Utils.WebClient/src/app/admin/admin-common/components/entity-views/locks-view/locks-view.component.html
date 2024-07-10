@@ -1,0 +1,75 @@
+<div class="flex flex-col h-full">
+  <div class="flex flex-col gap-2 sm:flex-row flex-wrap [&>*]:flex-grow">
+    <button mat-flat-button color="primary" (click)="createOrEditLock()" *ngIf="permissions.allowCreating">
+      Create Lock
+      <mat-icon matSuffix>add</mat-icon>
+    </button>
+  </div>
+  <app-search-bar
+    label="Search Locks"
+    [filters]="lockFilters"
+    (filtersChanged)="lockFiltersChanged($event)"
+    (searchSubmitted)="searchLocks($event)"
+  />
+  <app-api-data-table
+    [data$]="locks$"
+    [showLoadingIndicator$]="isLoadingLocks$"
+    [columns]="lockColumns$"
+    (pagingEvent)="onPagingEvent($event)"
+    (sortingEvent)="onSortingEvent($event)"
+  />
+</div>
+
+<ng-template #actions let-lock>
+  <div class="flex flex-col lg:flex-row gap-2 [&>*]:flex-grow w-full py-1">
+    <ng-container *ngIf="showActionsButton">
+      <button mat-flat-button color="primary" [matMenuTriggerFor]="actionsMenu">
+        Actions
+      </button>
+      <mat-menu #actionsMenu="matMenu" xPosition="before">
+        <ng-template matMenuContent>
+          <ng-container *ngIf="permissions.allowEditing">
+            <button mat-menu-item (click)="createOrEditLock(lock)">
+              <mat-icon color="primary">edit</mat-icon>
+              <span>Edit</span>
+            </button>
+          </ng-container>
+          <button mat-menu-item (click)="deleteLock(lock)" *ngIf="permissions.allowDeleting">
+            <mat-icon color="warn">delete</mat-icon>
+            <span>Delete</span>
+          </button>
+          <ng-container *ngIf="permissions.allowEditing && (!disableAssignment || !disableReassignment || !disableUnassignment)">
+            <mat-divider />
+            <ng-container *ngIf="!lock.lockerId; else hasLocker">
+              <button mat-menu-item (click)="assignOrReassignLockToLocker(lock)" *ngIf="!disableAssignment">
+                <mat-icon color="primary">edit</mat-icon>
+                <span>Assign to Locker</span>
+              </button>
+            </ng-container>
+            <ng-template #hasLocker>
+              <button mat-menu-item (click)="assignOrReassignLockToLocker(lock)" *ngIf="!disableReassignment">
+                <mat-icon color="primary">edit</mat-icon>
+                <span>Reassign Locker</span>
+              </button>
+              <button mat-menu-item (click)="removeLockFromLocker(lock)" *ngIf="!disableUnassignment">
+                <mat-icon color="primary">edit</mat-icon>
+                <span>Remove from Locker</span>
+              </button>
+            </ng-template>
+          </ng-container>
+          <ng-container *ngIf="lockActions && !inlineActions">
+            <mat-divider />
+            <ng-container *ngTemplateOutlet="lockActions; context: $any({ $implicit: lock })" />
+          </ng-container>
+        </ng-template>
+      </mat-menu>
+    </ng-container>
+    <ng-container *ngIf="lockActions && inlineActions">
+      <ng-container *ngTemplateOutlet="lockActions; context: $any({ $implicit: lock })" />
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #installationDateColumn let-lock>
+  <time class="whitespace-nowrap" [attr.datetime]="lock.installationDateUtc">{{ lock.installationDateUtc | date }}</time>
+</ng-template>

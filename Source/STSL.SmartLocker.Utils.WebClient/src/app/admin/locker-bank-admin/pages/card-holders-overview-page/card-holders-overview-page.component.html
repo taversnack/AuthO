@@ -1,0 +1,19 @@
+<app-layout [pageTitle]="'Manage ' + (cardHolderAliasPlural$ | async)" [fullHeight]="true">
+  <div class="flex flex-col h-full">
+    <mat-tab-group dynamicHeight preserveContent [(selectedIndex)]="selectedTabIndex">
+      <mat-tab label="Card Holders">
+        <admin-card-holders-view
+          (viewCardCredentialsClicked)="viewCardCredentialsForCardHolder($event)"
+        />
+      </mat-tab>
+      <mat-tab label="Card Credentials">
+        <!-- Extract this into card credentials view component -->
+        <admin-card-credentials-view
+          [currentlySelectedCardHolder$]="currentlySelectedCardHolder$"
+          [allowShowingAll]="false"
+          (currentlySelectedCardHolderChanged)="viewCardCredentialsForCardHolder($event)"
+        />
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</app-layout>

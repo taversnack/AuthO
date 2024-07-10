@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "JSON Schema for my JSON file format",
+
+  "type": "object",
+
+  "properties": {
+    "Id": {
+      "type": "integer",
+      "description": "The locker's unique serial number (or 'address')"
+    },
+    "SecurityMode": {
+      "enum": [ 0, 1, 2, 3, 4 ],
+      "description": "The locker's security mode: Installation = 0, Shared = 1, Dedicated = 2, Confiscated = 3, Reader = 4"
+    },
+    "Cards": {
+      "type": "array",
+      "description": "An array of cards",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "description": "The card's unique MIFARE number",
+            "type": "string"
+          },
+          "Type": {
+            "enum": [ 1, 2, 3, 4 ],
+            "description": "The card type: User = 1, Welcome = 2, Master = 3, SecuritySweep = 4"
+          }
+        },
+        "required": [ "Id", "Type" ]
+      },
+      "maxItems": 100,
+      "minItems": 1
+    }
+  },
+  "required": [ "Id" ]
+}

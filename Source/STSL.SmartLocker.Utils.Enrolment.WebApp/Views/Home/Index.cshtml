@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "STSL Goto Lock Access Card Enrolment";
+}
+
+@Html.AntiForgeryToken()
+
+<div class="main">
+    <h1>Goto Lock<sup>TM</sup></h1>
+    <h2>Locker Lock Access Card Enrolment</h2>
+    <p>Welcome to the Goto Lock<sup>TM</sup> enrolment page. This is where we gather your card details in preparation for use with your locker.</p>
+    <p><b>Touch your Access Card on the Card Reader</b></p>
+    <div>
+        <textarea id="captureText" class="capture" rows="2" cols="40" autofocus></textarea>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            // auto submit after key up events (debounced)
+            $("#captureText").on("keyup", debounce(function() {
+
+                var captureText = $("#captureText").val();
+
+                // do nothing if empty input
+                if (isEmptyOrSpaces(captureText)) {
+                    return;
+                }
+
+                // make the ajax call
+                var formData = new FormData();
+                formData.append("__RequestVerificationToken", $('input[name="__RequestVerificationToken"]').val());
+                formData.append("captureText", $("#captureText").val());
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Home/ProcessSwipe',
+                    data: formData,
+                    processData: false,
+                    contentType: false
+                }).done(function (response) {
+                    // when ajax call returns
+
+                    // clear and set focus back to the capture text box
+                    $("#captureText").val("").focus();
+
+                    // display the response
+                    $("#captureText").notify(response.message, response.success ? "success" : "error");
+                });
+            }, 200));
+
+            $("#captureText").on("focusout", function() {
+                // put focus back if lost
+                setTimeout(function() {
+                    $("#captureText").focus()
+                }, 200);
+
+            });
+
+        });
+
+        var debounce = function (func, wait, immediate) {
+            var timeout;
+            return function () {
+                var context = this, args = arguments;
+                var later = function () {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        };
+
+        var isEmptyOrSpaces = function (str) {
+            return str === null || str.match(/^ *$/) !== null;
+        };
+    </script>
+}

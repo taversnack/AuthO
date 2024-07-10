@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "SmartLocker.Kiosk": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Production"
+      }
+    }
+  }
+}

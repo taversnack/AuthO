@@ -1,0 +1,48 @@
+<div class="flex flex-col h-full">
+  <mat-tab-group dynamicHeight preserveContent [(selectedIndex)]="selectedTabIndex">
+    <mat-tab label="Locations" *ngIf="!data?.hideLocations">
+      <admin-locations-view
+        [useAdminRegisteredLocationsOnly]="data?.useAdminRegisteredLocationsAndLockerBanksOnly ?? false"
+        (viewLockerBanksClicked)="viewLockerBanksForLocation($event)" />
+    </mat-tab>
+    <mat-tab label="Banks">
+      <admin-locker-banks-view
+        [hideLockersAction]="true"
+        [lockerBankActions]="lockerBankActions"
+        [inlineActions]="true"
+        [allowShowingAll]="false"
+        [currentlySelectedLocation$]="currentlySelectedLocation$"
+        [useAdminRegisteredLockerBanksOnly]="data?.useAdminRegisteredLocationsAndLockerBanksOnly ?? false"
+      />
+    </mat-tab>
+    <mat-tab label="Selected">
+      <div class="flex flex-col h-full">
+        <app-api-data-table
+          [data$]="selectedLockerBanks$"
+          [columns]="['name', 'description', { name: 'actions', template: lockerBankActions, stickyPosition: StickyPosition.End }]"
+          [tableSettings]="selectedLockerBanksTableSettings"
+        />
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+  <div class="flex flex-col sm:flex-row gap-2 [&>*]:flex-grow">
+    <button mat-flat-button color="primary" (click)="confirmLockerBankSelection()" [disabled]="selectedLockerBanksLength === 0">
+      Confirm {{ selectedLockerBanksLength }} Locker Bank(s)
+    </button>
+    <button mat-flat-button color="warn" (click)="resetLockerBankSelection()" [disabled]="selectedLockerBanksLength === 0">
+      Reset Selection
+    </button>
+  </div>
+</div>
+
+<!--
+  TODO: Add disabling based on
+  disallowInstallationLockerBanks
+  disallowPermanentLockerBanks
+  disallowTemporaryLockerBanks
+-->
+<ng-template #lockerBankActions let-lockerBank>
+  <mat-checkbox [checked]="isLockerBankChecked(lockerBank)" (change)="selectLockerBank(lockerBank, $event)">
+    {{ checkboxLabel }}
+  </mat-checkbox>
+</ng-template>

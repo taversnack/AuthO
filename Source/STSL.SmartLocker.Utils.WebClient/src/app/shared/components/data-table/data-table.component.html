@@ -1,0 +1,52 @@
+<div class="relative flex-grow" [style.min-height.rem]="minimumTableHeight" *ngIf="data">
+  <div class="absolute inset-0 overflow-auto" *ngIf="mappedColumns$ | async as mappedColumns">
+    <div [style.min-width.rem]="mappedColumns.length * minimumColumnWidth">
+
+      <mat-table [dataSource]="data" matSort [attr.aria-label]="a11yLabel">
+        <ng-container *ngFor="let column of mappedColumns">
+          <ng-container *ngIf="column.sortable; else noSort">
+            <ng-container [matColumnDef]="column.name" [sticky]="column.stickyPosition === StickyPosition.Start" [stickyEnd]="column.stickyPosition === StickyPosition.End">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.headingDisplay }}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <ng-container *ngIf="!column.template; else useTemplateWithSort">
+                  {{ row[column.name] }}
+                </ng-container>
+                <ng-template #useTemplateWithSort>
+                  <ng-container *ngTemplateOutlet="column.template ?? null; context: $any({ $implicit: row })" />
+                </ng-template>
+              </mat-cell>
+            </ng-container>
+          </ng-container>
+
+          <ng-template #noSort>
+            <ng-container [matColumnDef]="column.name" [sticky]="column.stickyPosition === StickyPosition.Start" [stickyEnd]="column.stickyPosition === StickyPosition.End">
+              <mat-header-cell *matHeaderCellDef>{{ column.headingDisplay }}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <ng-container *ngIf="!column.template; else useTemplate">
+                  {{ row[column.name] }}
+                </ng-container>
+                <ng-template #useTemplate>
+                  <ng-container *ngTemplateOutlet="column.template ?? null; context: $any({ $implicit: row })" />
+                </ng-template>
+              </mat-cell>
+            </ng-container>
+          </ng-template>
+
+        </ng-container>
+        <!-- Header and Row Declarations -->
+        <mat-header-row *matHeaderRowDef="columnNames; sticky: useStickyHeader" />
+        <mat-row *matRowDef="let row; columns: columnNames" />
+      </mat-table>
+
+      <!-- <mat-paginator
+        *ngIf="usePaginator"
+        [pageSize]="usePaginator.defaultPageSize"
+        [pageSizeOptions]="usePaginator.pageSizeOptions"
+        [showFirstLastButtons]="usePaginator.firstAndLastButtonsEnabled"
+        (page)="transformPagingEvent($event)"
+        /> -->
+        <!-- [attr.aria-label]="usePaginator.a11yLabel" -->
+
+    </div>
+  </div>
+</div>

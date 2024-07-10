@@ -1,0 +1,64 @@
+/* Container styling */
+.search-bar-container {
+  display: flex;
+  align-items: center; 
+  background-color: white; 
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid; 
+  border-color: #ccc;
+  transition: border-color 100ms ease-in-out;
+  margin-bottom: 0.75rem;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+/* Apply border color on focus within the container */
+.search-bar-container:focus-within {
+  border: 1px solid rgb(55 65 81);
+}
+
+/* Icon styling */
+.search-icon {
+  display: flex; 
+  align-items: center; 
+  color: #606060; 
+  margin-right: 6px; 
+}
+
+/* Custom input styling */
+.custom-input {
+  flex: 1; 
+  outline: none;
+  background-color: whitesmoke;
+}
+
+.custom-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  display: none;
+}
+
+.custom-input[type="search"]::clear,
+.custom-input[type="search"]::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.search-bar-container {
+  position: relative;
+  display: flex;
+}
+
+.custom-input {
+  flex-grow: 1;
+  background-color: white;
+}
+
+.clear-button {
+  display: flex;
+}
+
+.clear-button mat-icon {
+  color: #606060;
+}

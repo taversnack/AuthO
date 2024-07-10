@@ -1,0 +1,5 @@
+trigger:
+- feature
+
+extends:
+  template: pipeline-shared.yml

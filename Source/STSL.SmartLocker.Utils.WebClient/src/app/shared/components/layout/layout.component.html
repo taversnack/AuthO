@@ -1,0 +1,9 @@
+<div [ngClass]="{ 'max-w-screen-3xl mx-auto p-3': !fullWidth, 'flex flex-col justify-center': verticallyCentered || fullHeight }" class="h-full bg-white shadow-lg">
+  <header *ngIf="pageTitle" class="text-center mx-auto my-1 lg:my-2">
+    <h1>{{ pageTitle }}</h1>
+    <p *ngIf="subtitle" class="text-lg lg:text-xl">{{ subtitle }}</p>
+  </header>
+  <main [ngClass]="{ 'flex-grow': fullHeight }">
+    <ng-content></ng-content>
+  </main>
+</div>

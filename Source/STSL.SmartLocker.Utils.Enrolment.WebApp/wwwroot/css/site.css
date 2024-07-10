@@ -1,0 +1,40 @@
+html {
+    font-size: 35px;
+    font-family: "Segoe UI";
+}
+
+h1 {
+    font-size: 60px;
+    font-weight: normal;
+}
+
+h1 sup {
+    font-size: 40px;
+}
+
+h2 {
+    font-size: 40px;
+    font-weight: normal;
+}
+
+p sup {
+    font-size: 25px;
+}
+
+div.main {
+    width: 900px;
+    height: 600px;
+    padding: 10px 50px 50px 50px;
+    background-color: lightblue;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+textarea.capture {
+    resize: none;
+    font-size: 20px;
+}

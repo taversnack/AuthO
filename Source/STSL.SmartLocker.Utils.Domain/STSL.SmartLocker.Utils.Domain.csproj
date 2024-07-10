@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\STSL.SmartLocker.Utils.Common\STSL.SmartLocker.Utils.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="evolis-sdk-cs">
+      <HintPath>..\STSL.SmartLocker.Utils.Kiosk.Printer.Evolis\lib\evolis-sdk-cs.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

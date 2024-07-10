@@ -1,0 +1,24 @@
+<form class="contents" (ngSubmit)="submitSearch()">
+  <mat-form-field class="w-full">
+    <mat-label>{{ label }}</mat-label>
+    <input matInput type="search" [formControl]="formControl">
+    <button mat-icon-button type="button" matTooltip="Select Search Filters" matPrefix [matMenuTriggerFor]="filtersMenu" *ngIf="filters.length">
+      <mat-icon>filter_list</mat-icon>
+    </button>
+    <ng-container *ngIf="useDebounceMilliseconds === undefined; else usingDebounce" matSuffix>
+      <button mat-icon-button type="submit" color="primary">
+        <mat-icon>search</mat-icon>
+      </button>
+    </ng-container>
+    <ng-template #usingDebounce matSuffix>
+      <mat-icon>search</mat-icon>
+    </ng-template>
+  </mat-form-field>
+</form>
+
+<mat-menu #filtersMenu="matMenu">
+  <button mat-menu-item *ngFor="let filter of mappedFilters" (click)="$event.stopPropagation(); filterValueChanged(filter)">
+    <mat-icon color="primary">{{ filter.selected ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+    <span>{{ filter.display }}</span>
+  </button>
+</mat-menu>

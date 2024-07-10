@@ -1,0 +1,26 @@
+<div class="flex flex-col h-full" *ngIf="currentlySelectedLocker">
+  <h3 class="text-center">{{ lockerDisplay }}</h3>
+  <app-api-data-table
+    [data$]="lockerAudits$"
+    [showLoadingIndicator$]="isLoadingLockerAudits$"
+    [columns]="lockerAuditColumns$"
+    (pagingEvent)="onPagingEvent($event)"
+  />
+</div>
+
+<ng-template #auditTimeColumn let-lockerAudit>
+  <!-- e.g. 22:06 08/03/23 -->
+  <time class="whitespace-nowrap" [attr.datetime]="lockerAudit.auditTime" *ngIf="lockerAudit.auditTime">
+    {{ lockerAudit.auditTime + 'Z' | date }}
+  </time>
+</ng-template>
+
+<ng-template #decimalSubjectSerialNumberColumn let-lockerAudit>
+  <ng-container *ngIf="lockerAudit.subjectSN">
+    {{ lockFormatCsnToDecimal(lockerAudit.subjectSN) }}
+  </ng-container>
+</ng-template>
+
+<!-- <ng-template #objectSerialNumberColumn let-lockerAudit>
+  <ng-container *ngIf="lockerAudit.objectSN"></ng-container>
+</ng-template> -->

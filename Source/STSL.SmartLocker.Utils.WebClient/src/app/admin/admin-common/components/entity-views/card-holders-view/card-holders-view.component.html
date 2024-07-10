@@ -1,0 +1,51 @@
+<div class="flex flex-col h-full">
+  <div class="flex flex-col gap-2 sm:flex-row flex-wrap [&>*]:flex-grow">
+    <button mat-flat-button color="primary" (click)="createOrEditCardHolder()" *ngIf="permissions.allowCreating">
+      Create {{ cardHolderAliasSingular }}
+      <mat-icon matSuffix>add</mat-icon>
+    </button>
+  </div>
+  <app-search-bar
+    label="Search {{ cardHolderAliasPlural }}"
+    [filters]="cardHolderFilters"
+    (searchSubmitted)="searchCardHolders($event)"
+    (filtersChanged)="cardHolderFiltersChanged($event)"
+  />
+  <app-api-data-table
+    [data$]="cardHolders$"
+    [showLoadingIndicator$]="isLoadingCardHolders$"
+    [columns]="['firstName', 'lastName', 'email', { name: 'uniqueIdentifier', headingDisplay: cardHolderUniqueIdentifierAlias }, { name: 'actions', template: actions, sortable: false, stickyPosition: StickyPosition.End }]"
+    (pagingEvent)="onPagingEvent($event)"
+    (sortingEvent)="onSortingEvent($event)"
+  />
+</div>
+
+<ng-template #actions let-cardHolder>
+  <div class="flex flex-col xl:flex-row gap-2 [&>*]:flex-grow w-full py-1">
+    <button mat-flat-button color="primary" (click)="viewCardCredentialsForCardHolder(cardHolder)" *ngIf="!hideCardCredentialsAction">Cards</button>
+    <ng-container *ngIf="showActionsButton">
+      <button mat-flat-button color="primary" [matMenuTriggerFor]="actionsMenu">
+        Actions
+      </button>
+      <mat-menu #actionsMenu="matMenu" xPosition="before">
+        <ng-template matMenuContent>
+          <button mat-menu-item (click)="createOrEditCardHolder(cardHolder)" *ngIf="permissions.allowEditing">
+            <mat-icon color="primary">edit</mat-icon>
+            <span>Edit</span>
+          </button>
+          <button mat-menu-item (click)="deleteCardHolder(cardHolder)" *ngIf="permissions.allowDeleting">
+            <mat-icon color="warn">delete</mat-icon>
+            <span>Delete</span>
+          </button>
+          <ng-container *ngIf="cardHolderActions && !inlineActions">
+            <mat-divider />
+            <ng-container *ngTemplateOutlet="cardHolderActions; context: $any({ $implicit: cardHolder })" />
+          </ng-container>
+        </ng-template>
+      </mat-menu>
+    </ng-container>
+    <ng-container *ngIf="cardHolderActions && inlineActions">
+      <ng-container *ngTemplateOutlet="cardHolderActions; context: $any({ $implicit: cardHolder })" />
+    </ng-container>
+  </div>
+</ng-template>

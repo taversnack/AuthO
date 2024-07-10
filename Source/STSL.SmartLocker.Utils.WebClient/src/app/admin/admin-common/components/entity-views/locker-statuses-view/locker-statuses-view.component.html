@@ -1,0 +1,127 @@
+<div class="flex flex-col h-full" *ngIf="currentlySelectedLockerBank">
+  <div class="flex flex-col gap-2 sm:flex-row flex-wrap [&>*]:flex-grow">
+    <h3 class="text-center">{{ currentlySelectedLockerBank.name }}</h3>
+    <ng-container>
+      <button mat-flat-button color="primary" [matMenuTriggerFor]="secondaryActionsMenu">
+        Actions
+      </button>
+      <mat-menu #secondaryActionsMenu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="viewLocationReferenceImage()">
+          <mat-icon>map</mat-icon>
+          <span>Location Reference Image</span>
+        </button>
+        <button mat-menu-item (click)="viewLockerBankReferenceImage()">
+          <mat-icon>map</mat-icon>
+          <span>Locker Bank Reference Image</span>
+        </button>
+        <ng-container *ngIf="!disableAssignment && currentlySelectedLockerBank.behaviour === LockerBankBehaviour.Temporary">
+          <mat-divider />
+          <button mat-menu-item (click)="assignTemporaryBankCardHolders()">
+            <mat-icon matSuffix>add</mat-icon>
+            <span>Assign {{ cardHolderAliasPlural }}</span>
+          </button>
+        </ng-container>
+        
+      </mat-menu>
+    </ng-container>
+
+  </div>
+  <app-search-bar
+    label="Search Locker Statuses"
+    [filters]="lockerStatusFilters"
+    (filtersChanged)="lockerStatusFiltersChanged($event)"
+    (searchSubmitted)="searchLockerStatuses($event)"
+  />
+  <app-api-data-table
+    [data$]="lockerStatuses$"
+    [showLoadingIndicator$]="isLoadingLockerStatuses$"
+    [columns]="lockerStatusColumns$"
+    (pagingEvent)="onPagingEvent($event)"
+    (sortingEvent)="onSortingEvent($event)"
+  />
+</div>
+
+<ng-template #actions let-lockerStatus>
+  <button mat-flat-button color="primary" [matMenuTriggerFor]="actionsMenu" class="w-full">
+    Actions
+  </button>
+  <mat-menu #actionsMenu="matMenu" xPosition="before">
+    <ng-template matMenuContent>
+      <button mat-menu-item (click)="viewLockerAuditsForLocker(lockerStatus)" *ngIf="lockerStatus.securityType === LockerSecurityType.SmartLock && !hideLockerAuditsAction">
+        <mat-icon>info</mat-icon>
+        <span>Audits</span>
+      </button>
+      <button mat-menu-item (click)="viewLockUpdateStatusForLocker(lockerStatus)" *ngIf="lockerStatus.securityType === LockerSecurityType.SmartLock && !disableViewConfigStatus">
+        <mat-icon>settings_remote</mat-icon>
+        <!-- <mat-icon>timelapse</mat-icon> -->
+        <span>View Update Status</span>
+      </button>
+      <button
+        mat-menu-item
+        (click)="updateLockerCardCredentialsFromSelectionDialog(lockerStatus)"
+        *ngIf="!disableAssignment && currentlySelectedLockerBank?.behaviour === LockerBankBehaviour.Permanent"
+        [disabled]="lockerStatus.securityType === LockerSecurityType.SmartLock && !lockerStatus.lockId"
+      >
+        <mat-icon color="primary">person_add</mat-icon>
+        <span>Assign and Un-Assign {{ cardHolderAliasPlural }}</span>
+      </button>
+      <ng-container *ngIf="lockerStatusActions">
+        <ng-container *ngTemplateOutlet="lockerStatusActions; context: $any({ $implicit: lockerStatus })" />
+      </ng-container>
+    </ng-template>
+  </mat-menu>
+</ng-template>
+
+<ng-template #assignedToColumn let-lockerStatus>
+  <ng-container *ngIf="lockerStatus.assignedTo; else unassignedLocker">
+    {{ lockerStatus.assignedTo }}{{ (lockerStatus.assignedToManyCount ?? 0) > 1 ? ' and ' + (lockerStatus.assignedToManyCount - 1) + ' more' : '' }}
+  </ng-container>
+  <ng-template #unassignedLocker>
+    <span class="text-green-600 font-semibold">
+      VACANT
+    </span>
+  </ng-template>
+</ng-template>
+
+<ng-template #lastCommunicationTimeColumn let-lockerStatus>
+  <ng-container *ngIf="lockerStatus.securityType === LockerSecurityType.SmartLock">
+    <ng-container *ngIf="lockHasRecentCommunication(lockerStatus); else noRecentLockCommunication">
+      <mat-icon color="primary" matTooltip="Lock has been online in last hour">wifi_tethering</mat-icon>
+    </ng-container>
+    <ng-template #noRecentLockCommunication>
+      <mat-icon color="warn" matTooltip="Lock has not been online in last hour">portable_wifi_off</mat-icon>
+    </ng-template>
+  </ng-container>
+  <ng-container *ngIf="lockerStatus.securityType !== LockerSecurityType.SmartLock">
+    N/A
+  </ng-container>
+</ng-template>
+
+<ng-template #batteryColumn let-lockerStatus>
+  <span *ngIf="lockerStatus.batteryVoltage === undefined || lockerStatus.batteryVoltage === null; else batteryLevelKnown">
+    <ng-container *ngIf="lockerStatus.securityType !== LockerSecurityType.SmartLock">
+      N/A
+    </ng-container>
+    <ng-container *ngIf="lockerStatus.securityType === LockerSecurityType.SmartLock">
+      <mat-icon>battery_unknown</mat-icon>
+    </ng-container>
+  </span>
+  <ng-template #batteryLevelKnown>
+    <!--<mat-icon [ngClass]="getBatteryLevelClasses(lockerStatus.batteryVoltage)"-->
+    <mat-icon [ngStyle]="{'color': getBatteryLevelColour(lockerStatus.batteryVoltage)}"
+    matTooltip="{{ getBatteryVoltagePercentage(lockerStatus.batteryVoltage) }}">
+      {{ getBatteryIcon(lockerStatus.batteryVoltage) }}
+    </mat-icon>
+  </ng-template>
+</ng-template>
+
+<ng-template #lastAuditTimeColumn let-lockerStatus>
+  <!-- e.g. 22:06 08/03/23 -->
+  <ng-container *ngIf="lockerStatus.securityType !== LockerSecurityType.SmartLock">
+    N/A
+  </ng-container>
+  <time class="whitespace-nowrap" [attr.datetime]="lockerStatus.lastAuditTime" *ngIf="lockerStatus.lastAuditTime">
+    {{ lockerStatus.lastAuditTime + 'Z' | date }}
+  </time>
+</ng-template>
+

@@ -1,0 +1,28 @@
+<!-- lock-audits-table.component.html -->
+<cdk-virtual-scroll-viewport itemSize="48" class="example-viewport" (scrolledIndexChange)="onScroll()">
+    <table mat-table [dataSource]="lockAudits$" class="mat-elevation-z8">
+  
+      <!-- Description Column -->
+      <ng-container matColumnDef="description">
+        <th mat-header-cell class="audit-header text-sm" *matHeaderCellDef>Description</th>
+        <td mat-cell *matCellDef="let element">{{ element.auditDescription }}</td>
+      </ng-container>
+  
+      <!-- Name Column -->
+      <ng-container matColumnDef="{{cardHolderAlias}}">
+        <th mat-header-cell class="audit-header" *matHeaderCellDef>{{cardHolderAlias}}</th>
+        <td mat-cell *matCellDef="let element">Adam Tester</td> <!-- Fix the audit stored procedure slk.ListAuditRecordsForLocker to have dedicated name field instead of subject?, instead of defaulting to a serial number -->
+      </ng-container>
+  
+      <!-- Time Column -->
+      <ng-container matColumnDef="time">
+        <th mat-header-cell class="audit-header" *matHeaderCellDef>Time</th>
+        <td mat-cell *matCellDef="let element">{{ element.auditTime | date: 'shortTime' }}</td>
+      </ng-container>
+  
+      <!-- Define rows for the table -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-spinner *ngIf="isLoadingLockerAudits$ | async" class="spinner"></mat-spinner>
+  </cdk-virtual-scroll-viewport>

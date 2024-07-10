@@ -1,0 +1,34 @@
+<app-layout pageTitle="Manage Lockers & View Statuses" [fullHeight]="true">
+  <div class="flex flex-col h-full">
+    <mat-tab-group dynamicHeight preserveContent [(selectedIndex)]="selectedTabIndex">
+      <mat-tab label="Locations">
+        <admin-locations-view
+          [useAdminRegisteredLocationsOnly]="false"
+          (viewLockerBanksClicked)="viewLockerBanksForLocation($event)"
+        />
+      </mat-tab>
+      <mat-tab label="Banks">
+        <admin-locker-banks-view
+          [useAdminRegisteredLockerBanksOnly]="false"
+          [currentlySelectedLocation$]="currentlySelectedLocation$"
+          (viewLockersClicked)="viewLockerStatusesForLockerBank($event)"
+          (currentlySelectedLocationChanged)="viewLockerBanksForLocation($event)"
+        />
+      </mat-tab>
+      <mat-tab label="Lockers">
+        <admin-locker-statuses-view
+          [currentlySelectedLockerBank$]="currentlySelectedLockerBank$"
+          [lockerStatusActions]="lockerStatusActions"
+        />
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</app-layout>
+
+<ng-template #lockerStatusActions let-lockerStatus>
+  <mat-divider />
+  <button mat-menu-item (click)="viewLeaseHistoryForLocker(lockerStatus)">
+    <mat-icon>history</mat-icon>
+    <span>View Lease History</span>
+  </button>
+</ng-template>

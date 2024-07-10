@@ -1,0 +1,361 @@
+stages:
+
+- stage: Functions
+  displayName: Azure Functions Build and Deploy
+  dependsOn: []
+  jobs:
+
+  - job: build_and_deploy_rabbitmq
+    displayName: RabbitMQ Processor Function Build and Deploy
+
+    pool: '$(agent.pool)'
+
+    variables:
+      functionProject: 'Source/STSL.SmartLocker.Utils.RabbitMQProcessor/STSL.SmartLocker.Utils.RabbitMQProcessor.csproj'
+      buildConfiguration: 'Release'
+      outputPath: '$(Build.ArtifactStagingDirectory)/functions/rabbitmq_processor'
+      artifactName: 'rabbitmq_processor'
+      functionName: '$(function-rabbitmq_processor)'
+
+    steps:
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        projects: '$(functionProject)'
+        publishWebProjects: False
+        arguments: '--configuration $(buildConfiguration) --output $(outputPath)'
+        zipAfterPublish: True
+
+    - publish: $(outputPath)
+      artifact: $(artifactName)
+
+    - task: AzureFunctionApp@2
+      inputs:
+        connectedServiceNameARM: '$(service-connection)'
+        appType: 'functionApp'
+        appName: '$(functionName)'
+        package: '$(outputPath)/**/*.zip'
+        deploymentMethod: 'auto'
+
+  - job: build_and_deploy_message_consume
+    displayName: Message Consume Function Build and Deploy
+
+    pool: '$(agent.pool)'
+
+    variables:
+      functionProject: 'Source/STSL.SmartLocker.Utils.BluBugMessageConsume/STSL.SmartLocker.Utils.BluBugMessageConsume.csproj'
+      buildConfiguration: 'Release'
+      outputPath: '$(Build.ArtifactStagingDirectory)/functions/message_consume'
+      artifactName: 'message-consume'
+      functionName: '$(function-message-consume)'
+
+    steps:
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        projects: '$(functionProject)'
+        publishWebProjects: False
+        arguments: '--configuration $(buildConfiguration) --output $(outputPath)'
+        zipAfterPublish: True
+
+    - publish: $(outputPath)
+      artifact: $(artifactName)
+
+    - task: AzureFunctionApp@2
+      inputs:
+        connectedServiceNameARM: '$(service-connection)'
+        appType: 'functionApp'
+        appName: '$(functionName)'
+        package: '$(outputPath)/**/*.zip'
+        deploymentMethod: 'auto'
+
+  - job: build_and_deploy_process_lock_events
+    displayName: Process Lock Events Function Build and Deploy
+
+    pool: '$(agent.pool)'
+
+    variables:
+      functionProject: 'Source/STSL.SmartLocker.Utils.LockEvents/STSL.SmartLocker.Utils.LockEvents.csproj'
+      buildConfiguration: 'Release'
+      outputPath: '$(Build.ArtifactStagingDirectory)/functions/process_lock_events'
+      artifactName: 'process_lock_events'
+      functionName: '$(function-process-lock-events)'
+
+    steps:
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        projects: '$(functionProject)'
+        publishWebProjects: False
+        arguments: '--configuration $(buildConfiguration) --output $(outputPath)'
+        zipAfterPublish: True
+
+    - publish: $(outputPath)
+      artifact: $(artifactName)
+
+    - task: AzureFunctionApp@2
+      inputs:
+        connectedServiceNameARM: '$(service-connection)'
+        appType: 'functionApp'
+        appName: '$(functionName)'
+        package: '$(outputPath)/**/*.zip'
+        deploymentMethod: 'auto'
+  
+  - job: build_and_deploy_process_msi
+    displayName: Process MSI Function Build and Deploy
+
+    pool: '$(agent.pool)'
+
+    variables:
+      functionProject: 'Source/STSL.SmartLocker.Utils.MSIProcessor/STSL.SmartLocker.Utils.MSIProcessor.csproj'
+      buildConfiguration: 'Release'
+      outputPath: '$(Build.ArtifactStagingDirectory)/functions/process_msi'
+      artifactName: 'process_msi'
+      functionName: '$(function-process-msi)'
+
+    steps:
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        projects: '$(functionProject)'
+        publishWebProjects: False
+        arguments: '--configuration $(buildConfiguration) --output $(outputPath)'
+        zipAfterPublish: True
+
+    - publish: $(outputPath)
+      artifact: $(artifactName)
+
+    - task: AzureFunctionApp@2
+      inputs:
+        connectedServiceNameARM: '$(service-connection)'
+        appType: 'functionApp'
+        appName: '$(functionName)'
+        package: '$(outputPath)/**/*.zip'
+        deploymentMethod: 'auto'
+
+- stage: API
+  displayName: API Build and Deploy
+  dependsOn: []
+  jobs:
+
+  - job: build_and_deploy_api
+    displayName:  Build and Deploy API Job
+
+    pool: '$(agent.pool)'
+
+    variables:
+      apiProject: 'Source/STSL.SmartLocker.Utils.Api/STSL.SmartLocker.Utils.Api.csproj'
+      buildConfiguration: 'Release'
+      outputPath: '$(Build.ArtifactStagingDirectory)/api'
+      artifactName: 'api'
+      webAppName: '$(web-app-api)'
+
+    steps:
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        projects: '$(apiProject)'
+        publishWebProjects: False
+        arguments: '--configuration $(buildConfiguration) --output $(outputPath)'
+        zipAfterPublish: True
+
+    - publish: $(outputPath)
+      artifact: $(artifactName)
+
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: '$(service-connection)'
+        appType: 'webApp'
+        WebAppName: '$(webAppName)'
+        packageForLinux: '$(outputPath)/**/*.zip'
+        enableCustomDeployment: true
+        DeploymentType: 'webDeploy'
+
+- stage: Enrolment_App
+  displayName: Enrolment App Build and Deploy
+  dependsOn: []
+  jobs:
+
+  - job: build_and_deploy_enrolment
+    displayName:  Build and Deploy Enrolment App Job
+
+    pool: '$(agent.pool)'
+
+    variables:
+      enrolmentProject: 'Source/STSL.SmartLocker.Utils.Enrolment.WebApp/STSL.SmartLocker.Utils.Enrolment.WebApp.csproj'
+      buildConfiguration: 'Release'
+      outputPath: '$(Build.ArtifactStagingDirectory)/enrolment'
+      artifactName: 'enrolment'
+      webAppName: '$(web-app-enrolment)'
+
+    steps:
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        projects: '$(enrolmentProject)'
+        publishWebProjects: False
+        arguments: '--configuration $(buildConfiguration) --output $(outputPath)'
+        zipAfterPublish: True
+
+    - publish: $(outputPath)
+      artifact: $(artifactName)
+
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: '$(service-connection)'
+        appType: 'webApp'
+        WebAppName: '$(webAppName)'
+        packageForLinux: '$(outputPath)/**/*.zip'
+        enableCustomDeployment: true
+        DeploymentType: 'webDeploy'
+
+- stage: Redirect_App
+  displayName: Redirect App Build and Deploy
+  dependsOn: []
+  jobs:
+
+  - job: build_and_deploy_redirect
+    displayName:  Build and Deploy Redirect App Job
+
+    pool: '$(agent.pool)'
+
+    variables:
+      enrolmentProject: 'Source/STSL.SmartLocker.Utils.Redirect.WebApp/STSL.SmartLocker.Utils.Redirect.WebApp.csproj'
+      buildConfiguration: 'Release'
+      outputPath: '$(Build.ArtifactStagingDirectory)/redirect'
+      artifactName: 'redirect'
+      webAppName: '$(web-app-redirect)'
+
+    steps:
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        projects: '$(enrolmentProject)'
+        publishWebProjects: False
+        arguments: '--configuration $(buildConfiguration) --output $(outputPath)'
+        zipAfterPublish: True
+
+    - publish: $(outputPath)
+      artifact: $(artifactName)
+
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: '$(service-connection)'
+        appType: 'webApp'
+        WebAppName: '$(webAppName)'
+        packageForLinux: '$(outputPath)/**/*.zip'
+        enableCustomDeployment: true
+        DeploymentType: 'webDeploy'
+
+- stage: Angular_Web_App
+  displayName: Angular Web App Build and Deploy
+  dependsOn: []
+  jobs:
+
+  - job: build_and_deploy_angular_job
+    displayName: Build and Deploy Angular Job
+
+    pool:
+      vmImage: ubuntu-latest
+
+    variables:
+      projectFolder: 'Source/STSL.SmartLocker.Utils.WebClient'
+      distFolder: 'dist/stsl.smart-locker.utils.web-client'
+  
+    steps:
+    - task: AzureStaticWebApp@0
+      inputs:
+          azure_static_web_apps_api_token: '$(angular-app-web-deployment-token)'
+          app_location: '$(projectFolder)' 
+          app_build_command: 'npm run $(angular-app-npm-run)'
+          output_location: '$(distFolder)'
+    
+    - publish: '$(projectFolder)/$(distFolder)'
+      artifact: webapp
+
+- stage: Kiosk_Vue_Client
+  displayName: Kiosk Vue Client Build and Deploy
+  dependsOn: []
+  jobs:
+
+  - job: build_and_deploy_kiosk_vue_client_job
+    displayName: Build and Deploy Kiosk Vue Client Job
+
+    pool:
+      vmImage: ubuntu-latest
+
+    variables:
+      projectFolder: 'Source/STSL.SmartLocker.Utils.Kiosk.Client'
+      distFolder: 'dist'
+
+    steps:
+    - task: AzureStaticWebApp@0
+      inputs:
+        azure_static_web_apps_api_token: '$(kiosk-vue-app-web-deployment-token)'
+        app_location: '$(projectFolder)'
+        app_build_command: 'npm run $(kiosk-vue-app-npm-run)'
+        output_location: '$(distFolder)'
+    
+    - publish: '$(projectFolder)/$(distFolder)'
+      artifact: kioskwebapp
+
+- stage: Kiosk_Wrapper
+  displayName: Kiosk Wrapper Build and Copy to Storage
+  dependsOn: []
+  jobs:
+
+  - job: build_and_copy_kiosk_wrapper
+    displayName: Build and Copy Kiosk Wrapper to Storage
+
+    pool: '$(agent.pool)'
+
+    variables:
+      solution: 'Source/STSL.SmartLocker.Utils.sln'
+      kioskProject: 'Source/STSL.SmartLocker.Utils.Kiosk.App.Wrapper/STSL.SmartLocker.Utils.Kiosk.App.Wrapper.csproj'
+      kioskProjectBinaries: 'Source/STSL.SmartLocker.Utils.Kiosk.App.Wrapper/bin/x86/Release/net8.0-windows10.0.19041.0'
+      buildPlatform: 'x86' # Adjusted from 'AnyCPU' to 'x86'
+      buildConfiguration: 'Release'
+      zipFileName: '$(kiosk-zip-file-name)'
+
+    steps:
+    - task: NuGetToolInstaller@1
+
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+
+    - task: VSBuild@1
+      inputs:
+        solution: '$(kioskProject)'
+        msbuildArgs: ''
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+
+    - publish: '$(kioskProjectBinaries)'
+      artifact: kiosk
+
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(kioskProjectBinaries)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/kiosk/$(zipFileName)'
+        replaceExistingArchive: true
+
+    - task: AzureFileCopy@5
+      inputs:
+        SourcePath: '$(Build.ArtifactStagingDirectory)/kiosk/$(zipFileName)'
+        azureSubscription: '$(service-connection-file-distribution)'
+        Destination: 'AzureBlob'
+        storage: '$(built-items-storage-account)'
+        ContainerName: '$(built-items-container-name)'

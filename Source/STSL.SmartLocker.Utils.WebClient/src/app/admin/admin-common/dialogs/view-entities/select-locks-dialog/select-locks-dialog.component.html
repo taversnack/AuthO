@@ -1,0 +1,48 @@
+<div class="flex flex-col h-full">
+  <mat-tab-group dynamicHeight preserveContent [(selectedIndex)]="selectedTabIndex">
+    <mat-tab label="Locks">
+      <admin-locks-view
+        [disableAssignment]="true"
+        [disableReassignment]="true"
+        [disableUnassignment]="true"
+        [lockActions]="lockActions"
+        [showLockerIdColumn]="settings.showLockerIdColumn"
+        [inlineActions]="true"
+      />
+    </mat-tab>
+    <mat-tab label="Selected">
+      <div class="flex flex-col h-full">
+        <app-api-data-table
+          [data$]="selectedLocks$"
+          [columns]="[
+            'serialNumber',
+            'firmwareVersion',
+            'operatingMode',
+            { name: 'installationDateUtc', headingDisplay: 'Installation Date', template: installationDateColumn },
+            { name: 'actions', template: lockActions, stickyPosition: StickyPosition.End }
+          ]"
+          [tableSettings]="selectedLocksTableSettings"
+        />
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <div class="flex flex-col sm:flex-row gap-2 [&>*]:flex-grow">
+    <button mat-flat-button color="primary" (click)="confirmLockSelection()" [disabled]="!selectedLocksLength">
+      Confirm {{ selectedLocksLength }} Locks
+    </button>
+    <button mat-flat-button color="warn" (click)="resetLockSelection()" [disabled]="!selectedLocksLength">
+      Reset Selection
+    </button>
+  </div>
+</div>
+
+<ng-template #installationDateColumn let-lock>
+  <time class="whitespace-nowrap" [attr.datetime]="lock.installationDateUtc">{{ lock.installationDateUtc | date }}</time>
+</ng-template>
+
+<ng-template #lockActions let-lock>
+  <mat-checkbox (change)="useLock(lock, $event)" [checked]="isLockChecked(lock)" [disabled]="!settings.allowSelectionOfLocksWithLockerIds && lock.lockerId">
+    Use Lock
+  </mat-checkbox>
+</ng-template>

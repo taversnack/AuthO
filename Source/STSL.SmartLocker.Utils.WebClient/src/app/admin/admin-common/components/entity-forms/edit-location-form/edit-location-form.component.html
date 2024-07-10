@@ -1,0 +1,11 @@
+<form [formGroup]="locationForm" (ngSubmit)="submitForm()" class="grid grid-cols-1 md:grid-cols-2 gap-2 [&>*]:w-full w-full">
+
+  <app-text-input [settings]="locationNameSettings" [control]="locationNameControl" />
+  <app-text-input [settings]="locationDescriptionSettings" [control]="locationDescriptionControl" />
+
+  <div class="align-button-with-input md:col-span-2">
+    <button mat-flat-button color="primary" type="submit" class="w-full" [disabled]="locationForm.invalid">
+      {{ hasLocation ? 'Save' : 'Create' }} Location
+    </button>
+  </div>
+</form>

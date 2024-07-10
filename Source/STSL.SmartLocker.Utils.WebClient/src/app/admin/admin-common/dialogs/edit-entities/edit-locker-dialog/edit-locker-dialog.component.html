@@ -1,0 +1,16 @@
+<div [ngSwitch]="dialogState" class="flex flex-col">
+  <app-countdown *ngSwitchCase="EditEntityDialogState.SaveSuccessful"
+    title="Saved successfully!"
+    message="This dialog will close in"
+    (completed)="close(closeValue)"
+  />
+  <div class="flex justify-center" *ngSwitchCase="EditEntityDialogState.SavingData">
+    <mat-spinner />
+  </div>
+  <admin-edit-locker-form
+    [locker$]="locker$"
+    [allowSmartLocksOnly]="allowSmartLocksOnly"
+    (lockerSubmitted)="createOrEditLocker($event)"
+    *ngSwitchDefault
+  />
+</div>

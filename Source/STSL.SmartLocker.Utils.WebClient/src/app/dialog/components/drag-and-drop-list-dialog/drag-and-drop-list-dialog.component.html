@@ -1,0 +1,12 @@
+<div
+  class="flex gap-2 my-4 [&>*]:flex-grow" [class.flex-col]="settings.displayMode === Axis2D.Vertical"
+  cdkDropList
+  [cdkDropListOrientation]="displayModeString"
+  (cdkDropListDropped)="moveListItem($event)"
+>
+  <div cdkDrag *ngFor="let listItem of dropListItems" class="shadow p-2 rounded bg-white">
+    {{ listItem }}
+  </div>
+</div>
+
+<button mat-flat-button cdkFocusInitial color="primary" (click)="close(dropListItems)">Confirm</button>

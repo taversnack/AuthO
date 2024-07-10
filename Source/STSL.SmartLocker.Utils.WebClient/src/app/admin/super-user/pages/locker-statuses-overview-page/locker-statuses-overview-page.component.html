@@ -1,0 +1,64 @@
+<app-layout pageTitle="Manage Lockers & View Statuses" [fullHeight]="true">
+  <div class="flex flex-col h-full">
+    <mat-tab-group dynamicHeight preserveContent [(selectedIndex)]="selectedTabIndex">
+      <mat-tab label="Locations">
+        <admin-locations-view
+          [useAdminRegisteredLocationsOnly]="false"
+          (viewLockerBanksClicked)="viewLockerBanksForLocation($event)"
+        />
+      </mat-tab>
+      <mat-tab label="Banks">
+        <admin-locker-banks-view
+          [useAdminRegisteredLockerBanksOnly]="false"
+          [currentlySelectedLocation$]="currentlySelectedLocation$"
+          (viewLockersClicked)="viewLockerStatusesForLockerBank($event)"
+          (currentlySelectedLocationChanged)="viewLockerBanksForLocation($event)"
+        />
+      </mat-tab>
+      <mat-tab label="Lockers">
+        <admin-locker-statuses-view
+          [currentlySelectedLockerBank$]="currentlySelectedLockerBank$"
+          [lockerStatusActions]="lockerStatusActions"
+        />
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</app-layout>
+
+<ng-template #lockerStatusActions let-lockerStatus>
+  <mat-divider />
+  <button mat-menu-item (click)="viewLeaseHistoryForLocker(lockerStatus)">
+    <mat-icon>history</mat-icon>
+    <!-- <mat-icon>event</mat-icon> -->
+    <!-- <mat-icon>date_range</mat-icon> -->
+    <!-- <mat-icon>dashboard</mat-icon> -->
+    <span>View Lease History</span>
+  </button>
+  <ng-container *ngIf="lockerStatus.securityType === LockerSecurityType.SmartLock">
+    <mat-divider />
+    <ng-container *ngIf="lockerStatus.lockId; else lockerHasNoLock">
+      <button mat-menu-item (click)="editLock(lockerStatus)">
+        <mat-icon color="primary">edit</mat-icon>
+        <span>Edit Lock</span>
+      </button>
+      <button mat-menu-item (click)="forceLockUpdate(lockerStatus)">
+        <mat-icon color="primary">lock</mat-icon>
+        <span>Resend Lock Config</span>
+      </button>
+      <button mat-menu-item (click)="unassignLockFromLocker(lockerStatus)">
+        <mat-icon color="warn">lock_open</mat-icon>
+        <span>Remove Lock</span>
+      </button>
+      <button mat-menu-item (click)="assignOrReassignLockToLocker(lockerStatus)">
+        <mat-icon color="primary">lock_open</mat-icon>
+        <span>Replace Lock</span>
+      </button>
+    </ng-container>
+    <ng-template #lockerHasNoLock>
+      <button mat-menu-item (click)="assignOrReassignLockToLocker(lockerStatus)">
+        <mat-icon color="primary">lock</mat-icon>
+        <span>Assign Lock</span>
+      </button>
+    </ng-template>
+  </ng-container>
+</ng-template>

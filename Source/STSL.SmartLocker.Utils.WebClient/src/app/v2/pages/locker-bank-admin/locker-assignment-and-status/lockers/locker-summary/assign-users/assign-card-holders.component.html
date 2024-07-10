@@ -1,0 +1,36 @@
+
+<!-- Content-->
+<div class=" flex flex-col mr-4 ml-4 pt-4 search-section">
+    <!-- Search Bar -->
+    <app-search-bar-v2
+        label="Search {{cardHolderPluralAlias}}"
+        [filters]="cardHolderFilters"
+        [enableAutoSearch]="true"
+        [useDebounceMilliseconds]="500"
+        (searchSubmitted)="searchCardHolders($event)"
+    />
+
+    <!-- Virtual Scroll with Material Cards -->
+    <cdk-virtual-scroll-viewport  itemSize="75" minBufferPx="750" maxBufferPx="1500" class="viewport" (scrolledIndexChange)="onScroll()">
+
+        <mat-card *cdkVirtualFor="let cardHolder of cardHolders$ | async templateCacheSize: 0" class="search-staff-card">
+            <mat-card-header class="card-header-content">
+                <mat-card-title class="text-black card-text">
+                    {{ cardHolder.cardHolder.firstName }} 
+                    {{ cardHolder.cardHolder.lastName }}
+                </mat-card-title>
+                <mat-card-subtitle class="card-text">
+                    {{ cardHolder.cardHolder.email }}
+                </mat-card-subtitle>
+                <button mat-button class="icon-button" (click)="handleSelectedCardHolder(cardHolder)">
+                    <fa-icon [icon]="faCirclePlus" class="add-icon"></fa-icon>
+                </button>
+            </mat-card-header>
+        </mat-card>
+        <div *ngIf="isLoadingCardHolders$ | async" class=" inset-0 z-50 backdrop-blur-sm flex items-center justify-center spinner">
+            <mat-spinner diameter="30"></mat-spinner>  <!-- Ensure the spinner is visible by setting a diameter --> <!--*ngIf="isLoadingLockerStatuses$ | async"-->
+        </div>
+
+    </cdk-virtual-scroll-viewport>
+         
+</div>

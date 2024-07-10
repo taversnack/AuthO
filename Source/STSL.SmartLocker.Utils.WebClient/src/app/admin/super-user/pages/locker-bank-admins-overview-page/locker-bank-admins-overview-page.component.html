@@ -1,0 +1,32 @@
+<app-layout pageTitle="Manage Locker Bank Admins" [fullHeight]="true">
+  <div class="flex flex-col h-full">
+    <mat-tab-group dynamicHeight preserveContent [(selectedIndex)]="selectedTabIndex">
+      <mat-tab label="Locations">
+        <admin-locations-view
+          [useAdminRegisteredLocationsOnly]="false"
+          (viewLockerBanksClicked)="viewLockerBanksForLocation($event)" />
+      </mat-tab>
+      <mat-tab label="Banks">
+        <admin-locker-banks-view
+          [currentlySelectedLocation$]="currentlySelectedLocation$"
+          [useAdminRegisteredLockerBanksOnly]="false"
+          [hideLockersAction]="true"
+          [lockerBankActions]="lockerBankActions"
+          [inlineActions]="true"
+          (currentlySelectedLocationChanged)="viewLockerBanksForLocation($event)"
+          (viewLockersClicked)="viewAdminsForLockerBank($event)" />
+      </mat-tab>
+      <mat-tab label="Admins">
+        <admin-locker-bank-admins-view
+          [currentlySelectedLockerBank$]="currentlySelectedLockerBank$"
+          [permissions]="lockerBankAdminPermissions"
+          (currentlySelectedLockerBankChanged)="viewAdminsForLockerBank($event)"
+        />
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</app-layout>
+
+<ng-template #lockerBankActions let-lockerBank>
+  <button mat-flat-button color="primary" (click)="viewAdminsForLockerBank(lockerBank)">Admins</button>
+</ng-template>

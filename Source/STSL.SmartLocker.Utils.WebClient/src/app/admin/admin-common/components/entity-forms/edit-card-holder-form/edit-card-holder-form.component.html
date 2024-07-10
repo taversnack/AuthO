@@ -1,0 +1,12 @@
+<form [formGroup]="cardHolderForm" (ngSubmit)="submitForm()" class="grid grid-cols-1 md:grid-cols-2 gap-2 [&>*]:w-full w-full">
+  <app-text-input [settings]="cardHolderFirstNameSettings" [control]="cardHolderFirstNameControl" />
+  <app-text-input [settings]="cardHolderLastNameSettings" [control]="cardHolderLastNameControl" />
+  <app-text-input [settings]="cardHolderUniqueIdentifierSettings" [control]="cardHolderUniqueIdentifierControl" />
+  <app-text-input [settings]="cardHolderEmailSettings" [control]="cardHolderEmailControl" />
+
+  <div class="align-button-with-input md:col-span-2">
+    <button mat-flat-button color="primary" type="submit" class="w-full" [disabled]="cardHolderForm.invalid">
+      {{ (hasCardHolder ? 'Save ' : 'Create ') + (cardHolderAliasSingular$ | async) }}
+    </button>
+  </div>
+</form>

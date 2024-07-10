@@ -1,0 +1,12 @@
+<div class="sticky left-0 top-0 right-0 z-50 bg-white">
+  <header class="flex w-full items-center gap-2 py-2 px-4 overflow-x-auto">
+    <h2 *ngIf="title" class="whitespace-nowrap">{{ title }}</h2>
+    <button mat-icon-button aria-label="Close dialog" class="ml-auto" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+  <mat-divider />
+</div>
+<div class="py-2 px-4 overflow-auto relative flex-grow">
+  <ng-template *dialogHost />
+</div>

@@ -1,0 +1,10 @@
+<ng-container [ngSwitch]="dialogState">
+  <div class="flex items-center justify-center h-full" *ngSwitchCase="EditEntityDialogState.SavingData">
+    <mat-spinner />
+  </div>
+
+  <ng-container *ngSwitchCase="EditEntityDialogState.EditingForm">
+    <admin-edit-reference-image [image]="image$" (referenceImageSubmitted)="createReferenceImage($event)" (referenceImageDeleted)="deleteReferenceImage()" (referenceImageCancelled)="close()"/>
+  </ng-container>
+</ng-container>
+

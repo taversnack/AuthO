@@ -1,0 +1,47 @@
+<div class="flex flex-col h-full">
+  <app-search-bar
+    label="Search Locker Leases"
+    [filters]="lockerLeaseFilters"
+    (filtersChanged)="lockerLeaseFiltersChanged($event)"
+    (searchSubmitted)="searchLockerLeases($event)"
+  />
+  <app-api-data-table
+    [data$]="lockerLeases$"
+    [showLoadingIndicator$]="isLoadingLockerLeases$"
+    [columns]="lockerLeaseColumns$"
+    (pagingEvent)="onPagingEvent($event)"
+    (sortingEvent)="onSortingEvent($event)"
+  />
+</div>
+
+<ng-template #actions let-lockerLease>
+  <button mat-flat-button color="primary" [matMenuTriggerFor]="actionsMenu" class="w-full">
+    Actions
+  </button>
+  <mat-menu #actionsMenu="matMenu" xPosition="before">
+    <ng-template matMenuContent>
+      <button mat-menu-item>
+        <mat-icon>info</mat-icon>
+        <span>Placeholder</span>
+      </button>
+    </ng-template>
+  </mat-menu>
+</ng-template>
+
+<ng-template #startedAtColumn let-lockerLease>
+  <time class="whitespace-nowrap" [attr.datetime]="lockerLease.startedAt" *ngIf="lockerLease.startedAt">
+    {{ lockerLease.startedAt | date }}
+  </time>
+</ng-template>
+
+<ng-template #endedAtColumn let-lockerLease>
+  <time class="whitespace-nowrap" [attr.datetime]="lockerLease.endedAt" *ngIf="lockerLease.endedAt">
+    {{ lockerLease.endedAt | date }}
+  </time>
+</ng-template>
+
+<ng-template #lockInstallationDateColumn let-lockerLease>
+  <time class="whitespace-nowrap" [attr.datetime]="lockerLease.lock.installationDateUtc" *ngIf="lockerLease.lock">
+    {{ lockerLease.lock.installationDateUtc | date }}
+  </time>
+</ng-template>

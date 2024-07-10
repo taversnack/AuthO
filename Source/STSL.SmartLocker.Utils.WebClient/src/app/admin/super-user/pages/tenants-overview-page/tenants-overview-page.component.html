@@ -1,0 +1,30 @@
+<app-layout pageTitle="Manage Tenants" [fullHeight]="true">
+  <div class="flex flex-col h-full">
+    <super-user-edit-tenant-form
+      [tenant$]="tenantToEdit$"
+      (tenantSubmitted)="createOrEditTenant($event)"
+      (cancelEdits)="cancelEdits()"
+    />
+    <app-api-data-table
+      [data$]="tenants$"
+      [showLoadingIndicator$]="isLoadingTenants$"
+      [columns]="['name', 'cardHolderAlias', { name: 'lockerUpdates', template: allowLockUpdatesTemplate }, { name: 'actions', template: tenantActions, stickyPosition: StickyPosition.End }]"
+      (pagingEvent)="onPagingEvent($event)"
+      (sortingEvent)="onSortingEvent($event)"
+    />
+  </div>
+</app-layout>
+
+<ng-template #allowLockUpdatesTemplate let-tenant>
+  <span *ngIf="tenant.allowLockUpdates">
+  On <mat-icon class="warning-icon">warning</mat-icon>
+  </span>
+  <span *ngIf="!tenant.allowLockUpdates">Off</span>
+</ng-template>
+
+<ng-template #tenantActions let-tenant>
+  <div class="flex gap-2 [&>*]:flex-grow w-full">
+    <button mat-flat-button color="primary" (click)="editTenant(tenant)">Edit</button>
+    <button mat-flat-button color="primary" (click)="deleteTenant(tenant)">Delete</button>
+  </div>
+</ng-template>

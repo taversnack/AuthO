@@ -1,0 +1,90 @@
+/* Infinte Scrolling */
+
+.content-divider {
+    --mat-divider-width: 4px;
+    border-top-color: whitesmoke;
+}
+
+/* Styling the scrollbar for WebKit browsers */
+.viewport::-webkit-scrollbar {
+    width: 12px; /* Width of the scrollbar */
+}
+  
+.viewport::-webkit-scrollbar-track {
+    background: white; /* Color of the scrollbar track */
+    border-radius: 10px; /* Rounded corners for the track */
+}
+  
+.viewport::-webkit-scrollbar-thumb {
+    background: #c7c7c7; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded corners for the thumb */
+    opacity: 0.6;
+}
+  
+.viewport::-webkit-scrollbar-thumb:hover {
+    background: #c7c7c7; /* Color of the scrollbar thumb on hover */
+}
+  
+.viewport {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(199, 199, 199, 0.5) white;
+    border-radius: 10px;
+    height: 100%;
+}
+
+/* Scoped within .viewport to limit effect */
+.viewport ::ng-deep .cdk-virtual-scroll-content-wrapper {
+    padding: 5px;
+}
+
+.search-section {
+    height: 55vh;
+}
+
+.search-staff-card {
+    background-color: white;
+    height: 75px;
+    overflow: hidden;
+    margin-bottom: 2px;
+    border-bottom: 2px solid whitesmoke;
+    box-shadow: none !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.search-staff-card mat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.card-header-content {
+    flex-grow: 1;
+    flex-shrink: 1;  /* Allows the item to shrink if necessary */
+    min-width: 0;    /* Prevents flex items from growing beyond the container */
+    padding: 0px 5px 0px;
+}
+
+.card-text { /* Assuming .card-text applies to both title and subtitle */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    max-width: 100%; /* Ensure they do not grow */
+}
+
+.icon-button {
+    margin: 0;
+    padding: 5px; /* Minimal padding for the button */
+    line-height: 1;
+}
+
+.add-icon {
+    --tw-text-opacity: 1;
+    color: rgb(55 65 81 / var(--tw-text-opacity));
+    font-size: 24px; /* Adjust icon size as needed */
+}
+
+
+.spinner ::ng-deep .mat-mdc-progress-spinner {
+    --mdc-circular-progress-active-indicator-color: #d3d2d2 !important;
+}

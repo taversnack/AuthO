@@ -1,0 +1,28 @@
+<div class="flex flex-col h-full">
+    <div class="bg-gray-100  p-4 text-center h-5/6" 
+        [ngClass]="{'bg-gray-200': isDragOver}"
+        [style.background-image]="'url(' + imagePreviewUrl + ')'"
+        [style.background-size]="'contain'"
+        [style.background-repeat]="'no-repeat'"
+        [style.background-position]="'center'" 
+         (dragover)="onDragOver($event)" 
+         (dragenter)="onDragEnter($event)"
+         (dragleave)="onDragLeave($event)"
+         (drop)="onDrop($event)" 
+         >
+    </div>
+    <div class="text-center pb-5">
+        <p class="text-gray-600">Drag & Drop your image above</p>
+        <p class="text-sm text-gray-400">(or click Browse)</p>
+        <p class="text-gray-600 mt-2" *ngIf="selectedFile">{{ selectedFile.name }}</p>
+        <mat-error *ngIf="fileError">{{ fileErrorMessage }}</mat-error>
+    </div>
+    <div class="flex justify-center grid-cols-3 gap-4">
+        <div>
+            <input hidden type="file" [accept]="settings?.accept" (input)="onFileSelected($event)" #fileInput>
+            <button mat-flat-button color="primary" (click)="fileInput.click()">{{ settings?.display }}</button>           
+        </div>
+          <button mat-flat-button color="primary" *ngIf="imagePreviewUrl && !fileError" (click)="submit()">Save</button>
+          <button mat-flat-button color="warn" (click)="cancel()">Cancel</button>
+      </div>
+</div>

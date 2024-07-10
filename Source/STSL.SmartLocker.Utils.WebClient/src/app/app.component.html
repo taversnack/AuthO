@@ -1,0 +1,11 @@
+﻿<div class="flex flex-col min-h-screen overflow-x-auto">
+  <div class="shadow z-40">
+    <app-navigation />
+  </div>
+  <div class="flex-grow relative flex [&>*]:flex-grow"><!--overflow-x-auto-->
+    <router-outlet class="hidden" />
+  </div>
+  <div class="z-40">
+    <app-footer />
+  </div>
+</div>

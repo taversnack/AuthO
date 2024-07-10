@@ -1,0 +1,10 @@
+.panel-divider {
+    height: 10px; /* Adjust the height as needed to show gradient effect */
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.locker-bank-panel {
+    margin-bottom: 16px;
+    box-shadow: none !important; /* Used important here to force no box shadow on the panels */
+}

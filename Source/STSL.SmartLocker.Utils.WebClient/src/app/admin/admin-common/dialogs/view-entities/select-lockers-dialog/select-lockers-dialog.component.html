@@ -1,0 +1,44 @@
+<div class="flex flex-col h-full">
+  <mat-tab-group dynamicHeight preserveContent [(selectedIndex)]="selectedTabIndex">
+    <mat-tab label="Locations" *ngIf="!data?.hideLocations">
+      <admin-locations-view
+        [useAdminRegisteredLocationsOnly]="data?.useAdminRegisteredLocationsAndLockerBanksOnly ?? false"
+        (viewLockerBanksClicked)="viewLockerBanksForLocation($event)" />
+    </mat-tab>
+    <mat-tab label="Banks" *ngIf="!data?.hideLockerBanks">
+      <admin-locker-banks-view
+        [currentlySelectedLocation$]="currentlySelectedLocation$"
+        [useAdminRegisteredLockerBanksOnly]="data?.useAdminRegisteredLocationsAndLockerBanksOnly ?? false"
+        [allowShowingAll]="false"
+        (currentlySelectedLocationChanged)="viewLockerBanksForLocation($event)"
+        (viewLockersClicked)="viewLockersForLockerBank($event)" />
+    </mat-tab>
+    <mat-tab label="Lockers">
+      <ng-template matTabContent>
+        <admin-lockers-and-locks-view
+          [currentlySelectedLockerBank$]="currentlySelectedLockerBank$"
+          [lockerAndLockActions]="lockerAndLockActions"
+          [inlineLockerAndLockActions]="true"
+        />
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+  <div class="flex flex-col sm:flex-row gap-2 [&>*]:flex-grow">
+    <button mat-flat-button color="primary" (click)="confirmLockerSelection()" [disabled]="!selectedLockers.length">
+      {{ selectedLockers.length > 1 ? 'Confirm ' + selectedLockers.length + ' Lockers' : 'Confirm Locker' }}
+    </button>
+    <button mat-flat-button color="warn" (click)="resetLockerSelection()" [disabled]="!selectedLockers.length">
+      Reset Selection
+    </button>
+  </div>
+</div>
+
+<ng-template #lockerAndLockActions let-lockerAndLock>
+  <mat-checkbox
+    [checked]="isLockerChecked(lockerAndLock)"
+    [disabled]="!data?.allowSelectingNonSmartLockers && lockerAndLock.locker.securityType !== LockerSecurityType.SmartLock"
+    (change)="selectLocker(lockerAndLock, $event)"
+  >
+    {{ checkboxLabel }}
+  </mat-checkbox>
+</ng-template>

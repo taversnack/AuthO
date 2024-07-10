@@ -1,0 +1,15 @@
+<app-layout pageTitle="Manage Locks" [fullHeight]="true">
+  <div class="flex flex-col h-full [&>*]:flex-grow">
+    <admin-locks-view
+      [permissions]="lockPermissions"
+      [lockActions]="lockActions"
+    />
+  </div>
+</app-layout>
+
+<ng-template #lockActions let-lock>
+  <button mat-menu-item (click)="forceLockUpdate(lock)">
+    <mat-icon color="primary">lock</mat-icon>
+    <span>Resend Lock Config</span>
+  </button>
+</ng-template>

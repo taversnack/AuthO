@@ -1,0 +1,5 @@
+trigger:
+- production
+
+extends:
+  template: pipeline-shared.yml

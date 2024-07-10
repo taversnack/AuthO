@@ -1,0 +1,92 @@
+<mat-card 
+  class="locker-card"
+  (click)="onCardClick(lockerSummary)">
+
+  <!-- Header -->
+  <mat-card-header class="mb-2">
+      <mat-card-title class="locker-card-title" >
+        Locker {{ lockerSummary.label }}
+        <ng-container *ngTemplateOutlet="lockStatusChip; context: {$implicit: lockerSummary}"></ng-container>
+        <ng-container *ngTemplateOutlet="battery; context: {$implicit: lockerSummary}"></ng-container>
+      </mat-card-title>
+      <mat-card-subtitle>
+        <small>{{ lockerSummary.serviceTag }}</small>
+    </mat-card-subtitle>
+  </mat-card-header>
+  
+  <!-- Content -->
+  <mat-card-content class="h-full">
+    <ng-container *ngTemplateOutlet="assignedTo; context: {$implicit: lockerSummary}"></ng-container>
+    <!-- Icons -->
+    <div>
+      <ng-container *ngTemplateOutlet="warnings; context: {$implicit: lockerSummary}"></ng-container>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Template for the lock "online" "offline"-->
+<ng-template #lockStatusChip let-lockerStatus>
+  <span
+    class="lock-status-chip" 
+    *ngIf="lockerStatus.securityType === LockerSecurityType.SmartLock">
+    <span *ngIf="lockHasRecentCommunication(); else noRecentLockCommunication" class="lock-status-online">
+      <span class="status-circle online-circle"></span>
+      <span>Online</span>
+    </span>
+
+    <ng-template #noRecentLockCommunication>
+      <span class="lock-status-offline">
+        <span class="status-circle offline-circle"></span>
+        <span>Offline</span>
+      </span>
+    </ng-template>
+  </span>
+</ng-template>
+
+<!-- Template for "Assigned to" -->
+<ng-template #assignedTo let-lockerStatus>
+    <ng-container *ngIf="lockerStatus.assignedTo; else unassignedLocker">
+        <p><small>Assigned to: </small></p>
+        <p class="mb-1 pl-3 text-black">
+                {{ lockerStatus.assignedTo }}
+                {{ (lockerStatus.assignedToManyCount ?? 0) > 1 ? ' and ' + 
+                (lockerStatus.assignedToManyCount - 1) + ' more' : '' }}</p>
+    </ng-container>
+    <ng-template #unassignedLocker>
+      <span class="text-green-600 font-semibold">
+        VACANT
+      </span>
+    </ng-template>
+</ng-template>
+  
+<!-- Template for battery percentage / icon / colour -->
+<ng-template #battery let-lockerStatus>
+  <span *ngIf="lockerStatus.batteryVoltage === undefined || lockerStatus.batteryVoltage === null; else batteryLevelKnown">
+    <ng-container *ngIf="lockerStatus.securityType !== LockerSecurityType.SmartLock"></ng-container>
+    <ng-container *ngIf="lockerStatus.securityType === LockerSecurityType.SmartLock"></ng-container>
+  </span>
+  <ng-template #batteryLevelKnown>
+    <div style="display: flex; align-items: center;">
+      <small style="margin-right: 4px; color: '{{getBatteryLevelColour(lockerStatus.batteryVoltage)}}'">{{getBatteryVoltagePercentage(lockerStatus.batteryVoltage)}}</small>
+      <fa-icon 
+        [icon]="getBatteryIcon(lockerStatus.batteryVoltage)"
+        [styles]="{'color': getBatteryLevelColour(lockerStatus.batteryVoltage)}">
+      </fa-icon>
+    </div>
+  </ng-template>
+</ng-template>
+
+<!-- Warnings; Change Battery, Locker Unused -->
+<ng-template #warnings let-lockerStatus>
+  <ng-container *ngIf="lockerStatus.batteryVoltage <= 3.4; else auditCheck">
+      <fa-icon [icon]="faExclamationTriangle" size="lg" [styles]="{'color': '#DB4352'}"></fa-icon>
+      <small class="ml-1">Battery change needed</small>
+  </ng-container>
+  
+  <ng-template #auditCheck>
+    <ng-container *ngIf="getAuditStatus() === 0">
+      <fa-icon [icon]="faExclamationTriangle" size="lg" [styles]="{'color': '#EDA247'}"></fa-icon>
+      <small class="ml-1 text-right">Locker not used in last month</small>
+    </ng-container>
+  </ng-template>
+</ng-template>

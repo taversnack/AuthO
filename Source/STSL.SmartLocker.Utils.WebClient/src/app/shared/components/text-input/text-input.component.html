@@ -1,0 +1,19 @@
+<mat-form-field class="w-full" *ngIf="control">
+  <mat-label>{{ settings?.display }}</mat-label>
+  <input [attr.type]="settings?.typeOverride === 'numeric' || settings?.typeOverride === undefined ? 'text' : settings?.typeOverride" matInput [formControl]="control" [placeholder]="settings?.placeholder ?? ''">
+  <mat-hint align="end" [attr.aria-label]="settings?.maxLength + ' characters or less'" *ngIf="settings?.maxLength">
+    {{ (control.value?.length ?? 0) + '/' + settings?.maxLength }}
+  </mat-hint>
+  <mat-hint align="start" [attr.aria-label]="settings?.minLength + ' characters or more'" *ngIf="settings?.minLength">
+    {{ (control.value?.length ?? 0) + '/' + settings?.minLength }}
+  </mat-hint>
+  <mat-error *ngIf="settings?.required && control.hasError('required')">
+    {{ settings?.display }} is required
+  </mat-error>
+  <mat-error *ngIf="settings?.maxLength && control.hasError('maxlength')">
+    {{ settings?.display }} too long
+  </mat-error>
+  <mat-error *ngIf="settings?.typeOverride === 'numeric' && control.hasError('pattern')">
+    {{ settings?.display }} must be a number
+  </mat-error>
+</mat-form-field>

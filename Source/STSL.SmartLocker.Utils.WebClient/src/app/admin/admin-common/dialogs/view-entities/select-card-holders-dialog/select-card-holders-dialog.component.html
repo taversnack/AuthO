@@ -1,0 +1,49 @@
+<div class="flex flex-col h-full">
+
+  <ng-template #isLoading>
+    <div class="flex justify-center">
+      <mat-spinner />
+    </div>
+  </ng-template>
+
+  <mat-tab-group dynamicHeight preserveContent [(selectedIndex)]="selectedTabIndex" *ngIf="!isLoadingSelectedCardHolders; else isLoading">
+    <mat-tab [label]="cardHolderAliasPlural">
+      <admin-card-holders-view
+        [hideCardCredentialsAction]="true"
+        [cardHolderActions]="cardHolderActions"
+        [inlineActions]="true"
+      />
+    </mat-tab>
+    <mat-tab [label]="'Selected ' + cardHolderAliasPlural">
+      <div class="flex flex-col h-full">
+        <app-api-data-table
+          [data$]="selectedCardHolders$"
+          [columns]="['firstName', 'lastName', 'email', { name: 'uniqueIdentifier', headingDisplay: this.cardHolderUniqueIdentifierAlias }, { name: 'actions', template: cardHolderActions, stickyPosition: StickyPosition.End }]"
+          [tableSettings]="selectedCardHolderTableSettings"
+        />
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <div class="flex flex-col sm:flex-row gap-2 [&>*]:flex-grow">
+    <button mat-flat-button color="primary" (click)="confirmCardHolderSelection()">
+      Confirm {{ selectedCardHoldersLength }} {{ selectedCardHoldersLength === 1 ? cardHolderAliasSingular : cardHolderAliasPlural }}
+    </button>
+    <button mat-flat-button color="warn" (click)="resetCardHolderSelection()" [disabled]="!selectedCardHoldersLength">
+      Reset Selection
+    </button>
+  </div>
+
+</div>
+
+<ng-template #cardHolderActions let-cardHolder>
+  <ng-container *ngIf="cardHolder.email || !settings.requireCardHolderEmail; else emailRequired">
+    <mat-checkbox (change)="useCardHolder(cardHolder, $event)" [checked]="isCardHolderChecked(cardHolder)">
+      Use {{ cardHolderAliasSingular }}
+    </mat-checkbox>
+  </ng-container>
+</ng-template>
+
+<ng-template #emailRequired>
+  <span>Email Required</span>
+</ng-template>

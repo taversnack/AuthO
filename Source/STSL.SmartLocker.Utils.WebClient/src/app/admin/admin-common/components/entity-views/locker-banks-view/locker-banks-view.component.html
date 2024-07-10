@@ -1,0 +1,61 @@
+<div class="flex flex-col h-full">
+  <div class="flex flex-col gap-2 sm:flex-row flex-wrap [&>*]:flex-grow" *ngIf="currentlySelectedLocation">
+    <h3 class="text-center">{{ currentlySelectedLocation.name }}</h3>
+    <button mat-flat-button color="primary" (click)="createOrEditLockerBank()" *ngIf="permissions.allowCreating">
+      Create Locker Bank
+      <mat-icon matSuffix>add</mat-icon>
+    </button>
+    <button mat-flat-button color="warn" (click)="viewAllLockerBanks()" *ngIf="allowShowingAll">
+      Show all Locker Banks
+      <mat-icon matSuffix>close</mat-icon>
+    </button>
+  </div>
+  <app-search-bar
+    label="Search Locker Banks"
+    [filters]="lockerBankFilters"
+    (filtersChanged)="lockerBankFiltersChanged($event)"
+    (searchSubmitted)="searchLockerBanks($event)"
+  />
+  <app-api-data-table
+    [data$]="lockerBanks$"
+    [showLoadingIndicator$]="isLoadingLockerBanks$"
+    [columns]="['name', 'description', 'behaviour', { name: 'actions', template: actions, sortable: false, stickyPosition: StickyPosition.End }]"
+    (pagingEvent)="onPagingEvent($event)"
+    (sortingEvent)="onSortingEvent($event)"
+  />
+</div>
+
+<ng-template #actions let-lockerBank>
+  <div class="flex flex-col lg:flex-row gap-2 [&>*]:flex-grow w-full py-1">
+    <button mat-flat-button color="primary" (click)="viewLockersForLockerBank(lockerBank)" *ngIf="!hideLockersAction">Lockers</button>
+
+    <ng-container *ngIf="showActionsButton">
+      <button mat-flat-button color="primary" [matMenuTriggerFor]="actionsMenu">
+        Actions
+      </button>
+      <mat-menu #actionsMenu="matMenu" xPosition="before">
+        <ng-template matMenuContent>
+          <button mat-menu-item (click)="createOrEditLockerBank(lockerBank)" *ngIf="permissions.allowEditing">
+            <mat-icon color="primary">edit</mat-icon>
+            <span>Edit</span>
+          </button>
+          <button mat-menu-item (click)="editReferenceImage(lockerBank)" *ngIf="permissions.allowEditing">
+            <mat-icon color="primary">map</mat-icon>
+            <span>Edit Reference Image</span>
+          </button>
+          <button mat-menu-item (click)="deleteLockerBank(lockerBank)" *ngIf="permissions.allowDeleting">
+            <mat-icon color="warn">delete</mat-icon>
+            <span>Delete</span>
+          </button>
+          <ng-container *ngIf="lockerBankActions && !inlineActions">
+            <mat-divider />
+            <ng-container *ngTemplateOutlet="lockerBankActions; context: $any({ $implicit: lockerBank })" />
+          </ng-container>
+        </ng-template>
+      </mat-menu>
+    </ng-container>
+    <ng-container *ngIf="lockerBankActions && inlineActions">
+      <ng-container *ngTemplateOutlet="lockerBankActions; context: $any({ $implicit: lockerBank })" />
+    </ng-container>
+  </div>
+</ng-template>

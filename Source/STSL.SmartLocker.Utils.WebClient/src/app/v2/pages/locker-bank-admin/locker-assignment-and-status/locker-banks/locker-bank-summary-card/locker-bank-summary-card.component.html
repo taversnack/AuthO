@@ -1,0 +1,53 @@
+<mat-card 
+  class="locker-bank-card" 
+  (click)="onCardClick()">
+
+  <!-- Header -->
+  <mat-card-header class="locker-bank-card-header">
+      <mat-card-title class="text-black">
+        {{ lockerBankSummary.name }}
+      </mat-card-title>
+      <mat-card-subtitle>
+        <small>{{ lockerBankSummary.behaviour }}</small>
+      </mat-card-subtitle> 
+  </mat-card-header>
+
+  <!-- Content -->
+  <mat-card-content class="locker-bank-card-content">
+    <p class="locker-bank-locker-count">
+      <span class="font-medium text-black">{{ lockerBankSummary.lockerCount }}</span> lockers
+      (<span class="font-medium text-black">{{lockerBankSummary.vacancyCount}}</span> vacant)
+    </p>
+    <!-- Usage for Locker Bank, Move to Template-->
+    <!--<div class="allocation-container">
+      <div class="flex items-center"> 
+        <span class="text-sm">Usage: </span>
+        <div class="usage-circle" [ngClass]="{
+            'usage-good': lockerBankSummary.usage === 'Good',
+            'usage-average': lockerBankSummary.usage === 'Average',
+            'usage-low': lockerBankSummary.usage === 'Low'
+          }"></div>
+        <span class="text-sm" [ngClass]="{
+          'text-green-700': lockerBankSummary.usage === 'Good',
+          'text-yellow-600': lockerBankSummary.usage === 'Average',
+          'text-red-800': lockerBankSummary.usage === 'Low'
+        }">{{ lockerBankSummary.usage }}</span>
+      </div>
+    </div>-->
+  </mat-card-content>
+
+  <!-- Footer -->
+  <mat-card-footer *ngIf="lockerBankSummary.hasWarnings" class="locker-bank-card-footer">
+    <mat-divider ></mat-divider>
+    <div class="locker-bank-card-footer-content">
+      <mat-icon 
+        class="warning-icon"
+        matTooltip="There are lockers inside of this bank which contain alerts such as: Battery changes or extended periods of no use"
+        aria-label="Warning">
+        report
+      </mat-icon>
+      <small>This locker bank contains alerts</small>
+    </div>
+  </mat-card-footer>
+  
+</mat-card>

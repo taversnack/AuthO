@@ -1,0 +1,24 @@
+<mat-accordion multi="true"> <!-- Allows multiple panels to be open -->
+
+  <!-- Location Expansion Panel -->
+  <mat-expansion-panel class="locker-bank-panel"[expanded]="true"*ngFor="let locationSummary of lockerBankSummaries | async">
+
+    <!-- Header -->
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <h2>{{ locationSummary.locationName }}</h2>
+      </mat-panel-title>
+      <!--<mat-panel-description class="text-sm">{{locationSummary.locationDescription}}</mat-panel-description>-->
+    </mat-expansion-panel-header>
+    <mat-divider class="panel-divider"></mat-divider>
+
+    <!-- Locker Bank Summaries -->
+    <div *ngFor="let lockerBank of locationSummary.lockerBankSummaries">
+      <locker-bank-summary-card 
+      [lockerBankSummary]="lockerBank"
+      (cardClicked)="handleCardClick($event, locationSummary.locationName)">
+      </locker-bank-summary-card>
+    </div>
+  
+  </mat-expansion-panel>
+</mat-accordion>

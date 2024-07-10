@@ -1,0 +1,27 @@
+<div class="h-full flex flex-col items-stretch justify-center text-center text-white">
+  <div class="relative py-16">
+    <div class="absolute inset-0 bg-gradient-to-bl from-primary-700 to-primary-900 -skew-y-3 -z-10"></div>
+    <div class="absolute inset-0 -top-4 -bottom-4 bg-primary-700/75 -skew-y-3 -z-20"></div>
+    <div class="absolute inset-0 -top-8 -bottom-8 bg-primary-700/75 -skew-y-3 -z-20"></div>
+    <div class="absolute inset-0 -top-12 -bottom-12 bg-primary-700/75 -skew-y-3 -z-20"></div>
+    <div class="max-w-screen-2xl mx-auto !p-2">
+      <div class="flex flex-col max-w-2xl mx-auto">
+        <header class="my-6 text-white">
+          <h1>Goto Secure™</h1>
+          <p>By STSL</p>
+        </header>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
+          <a routerLink="admin" mat-fab extended color="primary">
+            <mat-icon>lock</mat-icon>
+            <span>Manage Lockers</span>
+          </a>
+          <!-- TODO: Have a generic help page NOT tied to a single client!! -->
+          <a href="https://www.uclhlocker.support" target="_blank" mat-fab extended color="accent" title="Opens in new tab">
+            <mat-icon>help</mat-icon>
+            <span>Help Centre <mat-icon class="align-bottom" inline>open_in_new</mat-icon></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

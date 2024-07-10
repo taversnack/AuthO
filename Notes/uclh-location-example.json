@@ -1,0 +1,70 @@
+{
+  "$schema": "./uclh-location-requirements.schema.json",
+  "locations": [
+    {
+      "name": "Main building - 1F",
+      "banks": [
+        {
+          "name": "Neurology Dept - 1",
+          "description": "Opposite entrance on the left",
+          "mode": "permanent",
+          "lockers": [
+            "1,1",
+            "2,1",
+            "3,1",
+            "4,1",
+            "5,1",
+            "1,2",
+            "2,2",
+            "3,2",
+            "4,2",
+            "5,2",
+            "1,3",
+            "2,3",
+            "3,3",
+            "4,3",
+            "5,3",
+            "1,4",
+            "2,4",
+            "3,4",
+            "4,4",
+            "5,4",
+            "1,5",
+            "2,5",
+            "3,5",
+            "4,5",
+            "5,5"
+          ]
+        },
+        {
+          "name": "Neurology Dept - 1",
+          "description": "Opposite entrance on the right",
+          "mode": "temporary",
+          "leaseDurationInHours": 7.5,
+          "lockers": [
+            "1,1",
+            "2,1",
+            "3,1",
+            "4,1",
+            "5,1",
+            "1,2",
+            "2,2",
+            "3,2",
+            "4,2",
+            "5,2",
+            "1,3",
+            "2,3",
+            "3,3",
+            "4,3",
+            "5,3"
+          ]
+        },
+        {
+          "name": "Oncology Dept - 1",
+          "mode": "permanent",
+          "lockers": [ "L1", "L2", "L3", "L4" ]
+        }
+      ]
+    }
+  ]
+}

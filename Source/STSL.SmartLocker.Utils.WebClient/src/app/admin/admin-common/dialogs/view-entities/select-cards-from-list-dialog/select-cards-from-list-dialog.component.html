@@ -1,0 +1,31 @@
+<div class="flex flex-col h-full">
+  <app-api-data-table
+    [data$]="cardCredentials$"
+    [columns]="cardCredentialColumns$"
+    [tableSettings]="tableSettings"
+  />
+  <div class="flex flex-col sm:flex-row gap-2 [&>*]:flex-grow">
+    <button mat-flat-button color="primary" (click)="confirmSelection()">
+      Confirm {{ selectedCards.length }} cards
+    </button>
+    <button mat-flat-button color="warn" (click)="resetSelection()" [disabled]="selectedCards.length === 0">
+      Reset Selection
+    </button>
+  </div>
+</div>
+
+
+<ng-template #actions let-cardCredential>
+  <mat-checkbox
+    #checkBox
+    [checked]="isCardSelected(cardCredential)"
+    [disabled]="(!checkBox.checked && settings.selectionLimit !== null && selectedCards.length >= settings.selectionLimit) || (settings.ensureCardSelectionsHaveSerialNumber && !cardCredential.serialNumber)"
+    (change)="toggleSelectedCard(cardCredential, $event.checked)"
+  >
+  Use Card
+</mat-checkbox>
+</ng-template>
+
+<!--
+  Wrap above with if necessary
+-->

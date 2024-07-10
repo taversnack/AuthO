@@ -1,0 +1,72 @@
+/* Card Style */
+.locker-bank-card {
+  color: #4B5563; 
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 2px 1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+.locker-bank-card:hover {
+  background-color: #F3F4F6; 
+  cursor: pointer; 
+}
+
+/* Header */
+.locker-bank-card-header {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+/* Content */
+.locker-bank-card-content {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.locker-bank-locker-count {
+  padding-left: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+/* Footer */
+.locker-bank-card-footer {
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+.locker-bank-card-footer-content {
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+  align-items: center;
+  display: flex;
+}
+
+/* Usage Indicator Styles */
+.usage-circle {
+  width: 0.75rem; 
+  height: 0.75rem; 
+  border-radius: 9999px; 
+  margin-right: 0.5rem;
+  margin-left: 0.25rem;
+}
+
+.usage-good {
+  background-color: #059669; 
+}
+
+.usage-average {
+  background-color: #D97706;
+}
+
+.usage-low {
+  background-color: #991B1B;
+}
+
+/* Warning message */
+.warning-icon {
+  bottom: 10px;
+  right: 10px;
+  height: 25px;
+  width: 25px;
+  font-size: 25px;
+  color: #ffab00; 
+  margin-right: 0.5rem;
+}
